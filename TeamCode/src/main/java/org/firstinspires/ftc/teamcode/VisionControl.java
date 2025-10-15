@@ -11,30 +11,26 @@ import org.firstinspires.ftc.robotcore.external.hardware.camera.controls.GainCon
 import org.firstinspires.ftc.vision.VisionPortal;
 import org.firstinspires.ftc.vision.apriltag.AprilTagDetection;
 import org.firstinspires.ftc.vision.apriltag.AprilTagProcessor;
-import org.openftc.apriltag.AprilTagDetection;
-
+import com.qualcomm.robotcore.hardware.HardwareMap;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 public class VisionControl
 {
-    AprilTagProcessor myAprilTagProcessor;
-    VisionPortal myVisionPortal;
-    List<AprilTagDetection> myAprilTagDetections;  // list of all detections
-    int myAprilTagIdCode;                           // ID code of current detection, in for() loop
+    private VisionPortal myVisionPortal;
+    private AprilTagProcessor myAprilTagProcessor;
+    private List<AprilTagDetection> myAprilTagDetections;  // list of all detections
+    private int myAprilTagIdCode;                           // ID code of current detection, in for() loop
 
-    public VisionControl(HardwareMap hwmap)
+    public VisionControl(HardwareMap hwMap)
     {
         // Create a VisionPortal, with the specified camera and AprilTag processor, and assign it to a variable.
-        myVisionPortal = VisionPortal.easyCreateWithDefaults(hardwareMap.get(WebcamName.class, "Webcam 1"), myAprilTagProcessor);
+        myVisionPortal = VisionPortal.easyCreateWithDefaults(hwMap.get(WebcamName.class, "Webcam 1"), myAprilTagProcessor);
         // Create the AprilTag processor and assign it to a variable.
         myAprilTagProcessor = AprilTagProcessor.easyCreateWithDefaults();
-
-
     }
 
     void getAprilTagId()
     {
-
         // Get a list of AprilTag detections.
         myAprilTagDetections = myAprilTagProcessor.getDetections();
 
