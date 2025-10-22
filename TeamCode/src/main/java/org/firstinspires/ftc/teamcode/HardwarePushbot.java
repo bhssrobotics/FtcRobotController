@@ -52,6 +52,8 @@ public class HardwarePushbot {
   
        public DriveTrain driveTrain;
 
+      public VisionControl visionControl;
+
 
         
         /* local OpMode members. */
@@ -64,11 +66,12 @@ public class HardwarePushbot {
         }
 
         /* Initialize standard Hardware interfaces */
-        public void init(HardwareMap ahwMap) 
+        public void init(HardwareMap hwMap)
         {
             //launcher= new BasicBot_Launcher(ahwMap, 1, 0.5);
 
-            driveTrain = new DriveTrain(ahwMap);
+            driveTrain = new DriveTrain(hwMap);
+            visionControl = new VisionControl(hwMap);
         }
     }
 

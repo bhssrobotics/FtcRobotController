@@ -14,34 +14,84 @@ import org.firstinspires.ftc.vision.apriltag.AprilTagProcessor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
+
+
 public class VisionControl
 {
-    private VisionPortal myVisionPortal;
-    private AprilTagProcessor myAprilTagProcessor;
-    private List<AprilTagDetection> myAprilTagDetections;  // list of all detections
-    private int myAprilTagIdCode;                           // ID code of current detection, in for() loop
+    private VisionPortal visionPortal;
+    private static final boolean USE_WEBCAM = true;  // true for webcam, false for phone camera
+    private AprilTagProcessor aprilTag;
+    private int myAprilTagIdCode; // ID code of current detection, in for() loop
 
     public VisionControl(HardwareMap hwMap)
     {
-        // Create a VisionPortal, with the specified camera and AprilTag processor, and assign it to a variable.
-        myVisionPortal = VisionPortal.easyCreateWithDefaults(hwMap.get(WebcamName.class, "Webcam 1"), myAprilTagProcessor);
-        // Create the AprilTag processor and assign it to a variable.
-        myAprilTagProcessor = AprilTagProcessor.easyCreateWithDefaults();
+        initAprilTag(hwMap);
     }
 
-    void getAprilTagId()
-    {
-        // Get a list of AprilTag detections.
-        myAprilTagDetections = myAprilTagProcessor.getDetections();
+    private void initAprilTag(HardwareMap hwMap) {
 
-        for (AprilTagDetection myAprilTagDetection : myAprilTagDetections)
-        {
-            if (myAprilTagDetection.metadata != null) {  // This check for non-null Metadata is not needed for reading only ID code.
-                myAprilTagIdCode = myAprilTagDetection.id;
+        // Create the AprilTag processor the easy way. Maybe calibrate in the future.
+        aprilTag = AprilTagProcessor.easyCreateWithDefaults();
 
-                // Now take action based on this tag's ID code, or store info for later action.
-
-            }
+        // Create the vision portal the easy way.
+        if (USE_WEBCAM) {
+            visionPortal = VisionPortal.easyCreateWithDefaults(
+                    hwMap.get(WebcamName.class, "Webcam 1"), aprilTag);
+        } else {
+            visionPortal = VisionPortal.easyCreateWithDefaults(
+                    BuiltinCameraDirection.BACK, aprilTag);
         }
+
+    }   // end method initAprilTag()
+
+    // accessor to stop streaming
+    public void stopStreaming()
+    {
+        visionPortal.stopStreaming();
     }
+
+    // accessor to resume streaming
+    public void resumeStreaming()
+    {
+        visionPortal.resumeStreaming();
+    }
+
+    // accessor to close
+    public void close()
+    {
+        visionPortal.close();
+    }
+
+    // give back all the AprilTags that we see in the list.
+    public List<AprilTagDetection> getCurrentDetections()
+    {
+        List<AprilTagDetection> currentDetections = aprilTag.getDetections();
+        return currentDetections;
+    }
+
+    // Method from sample
+//    private void telemetryAprilTag() {
+//
+//        List<AprilTagDetection> currentDetections = aprilTag.getDetections();
+//        telemetry.addData("# AprilTags Detected", currentDetections.size());
+//
+//        // Step through the list of detections and display info for each one.
+//        for (AprilTagDetection detection : currentDetections) {
+//            if (detection.metadata != null) {
+//                telemetry.addLine(String.format("\n==== (ID %d) %s", detection.id, detection.metadata.name));
+//                telemetry.addLine(String.format("XYZ %6.1f %6.1f %6.1f  (inch)", detection.ftcPose.x, detection.ftcPose.y, detection.ftcPose.z));
+//                telemetry.addLine(String.format("PRY %6.1f %6.1f %6.1f  (deg)", detection.ftcPose.pitch, detection.ftcPose.roll, detection.ftcPose.yaw));
+//                telemetry.addLine(String.format("RBE %6.1f %6.1f %6.1f  (inch, deg, deg)", detection.ftcPose.range, detection.ftcPose.bearing, detection.ftcPose.elevation));
+//            } else {
+//                telemetry.addLine(String.format("\n==== (ID %d) Unknown", detection.id));
+//                telemetry.addLine(String.format("Center %6.0f %6.0f   (pixels)", detection.center.x, detection.center.y));
+//            }
+//        }   // end for() loop
+//
+//        // Add "key" information to telemetry
+//        telemetry.addLine("\nkey:\nXYZ = X (Right), Y (Forward), Z (Up) dist.");
+//        telemetry.addLine("PRY = Pitch, Roll & Yaw (XYZ Rotation)");
+//        telemetry.addLine("RBE = Range, Bearing & Elevation");
+//
+//    }   // end method telemetryAprilTag()
 }
