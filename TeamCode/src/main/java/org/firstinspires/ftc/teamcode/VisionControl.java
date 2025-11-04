@@ -27,6 +27,7 @@ public class VisionControl
     {
         initAprilTag(hwMap);
     }
+    
 
     private void initAprilTag(HardwareMap hwMap) {
 
@@ -42,7 +43,7 @@ public class VisionControl
                     BuiltinCameraDirection.BACK, aprilTag);
         }
 
-    }   // end method initAprilTag()
+    }   // end method initAprilTag(                                                                                                            )
 
     // accessor to stop streaming
     public void stopStreaming()
@@ -67,6 +68,21 @@ public class VisionControl
     {
         List<AprilTagDetection> currentDetections = aprilTag.getDetections();
         return currentDetections;
+    }
+
+    public void getDetectionsVal()
+    {
+        List<AprilTagDetection> currentDetections = getCurrentDetections();
+        for (AprilTagDetection detection : currentDetections)
+        {
+            if (detection.metadata != null) {
+                int aprilTagID = detection.id; //don't return but check if id match
+                double xPos = detection.ftcPose.x;
+                double yPos = detection.ftcPose.y;
+                double zPos = detection.ftcPose.z;
+            }
+
+        }
     }
 
     // Method from sample
