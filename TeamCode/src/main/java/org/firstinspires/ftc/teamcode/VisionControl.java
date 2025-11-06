@@ -10,6 +10,7 @@ import org.firstinspires.ftc.robotcore.external.hardware.camera.controls.Exposur
 import org.firstinspires.ftc.robotcore.external.hardware.camera.controls.GainControl;
 import org.firstinspires.ftc.vision.VisionPortal;
 import org.firstinspires.ftc.vision.apriltag.AprilTagDetection;
+import org.firstinspires.ftc.vision.apriltag.AprilTagPoseFtc;
 import org.firstinspires.ftc.vision.apriltag.AprilTagProcessor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import java.util.List;
@@ -70,19 +71,20 @@ public class VisionControl
         return currentDetections;
     }
 
-    public void getDetectionsVal()
+    public AprilTagPoseFtc getDetectionsVal(int id)
     {
         List<AprilTagDetection> currentDetections = getCurrentDetections();
         for (AprilTagDetection detection : currentDetections)
         {
             if (detection.metadata != null) {
-                int aprilTagID = detection.id; //don't return but check if id match
-                double xPos = detection.ftcPose.x;
-                double yPos = detection.ftcPose.y;
-                double zPos = detection.ftcPose.z;
+                if (detection.id==id){
+                    return detection.ftcPose;
+                }
+
             }
 
         }
+        return null;
     }
 
     // Method from sample
