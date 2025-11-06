@@ -48,7 +48,7 @@ public class HardwarePushbot {
 
 
 
-        //public BasicBot_Launcher launcher = null;
+        public BasicBot_Launcher launcher = null;
   
        public DriveTrain driveTrain;
 
@@ -66,12 +66,12 @@ public class HardwarePushbot {
         }
 
         /* Initialize standard Hardware interfaces */
-        public void init(HardwareMap hwMap)
+        public void init(HardwareMap ahwMap) 
         {
-            //launcher= new BasicBot_Launcher(ahwMap, 1, 0.5);
+            launcher= new BasicBot_Launcher(ahwMap, 1, 1,0.5);
 
-            driveTrain = new DriveTrain(hwMap);
-            visionControl = new VisionControl(hwMap);
+            driveTrain = new DriveTrain(ahwMap);
+            visionControl = new VisionControl(ahwMap);
         }
     }
 
