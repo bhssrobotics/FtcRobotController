@@ -48,7 +48,7 @@ public class HardwarePushbot {
 
 
 
-        public BasicBot_Launcher launcher = null;
+       // public BasicBot_Launcher launcher = null;
   
        public DriveTrain driveTrain;
 
