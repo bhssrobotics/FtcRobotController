@@ -31,9 +31,7 @@ package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
-import org.firstinspires.ftc.vision.apriltag.AprilTagDetection;
-import org.firstinspires.ftc.vision.apriltag.AprilTagProcessor;
-import java.util.List;
+
 
 /**
 * This file provides basic Telop driving for a Pushbot robot.
@@ -51,42 +49,42 @@ import java.util.List;
 */
 
 @TeleOp(name="Steering Controls", group="Pushbot")
-public class SteeringControls extends OpMode
-{
+public class SteeringControls extends OpMode {
     /* Declare OpMode members. */
-    HardwarePushbot robot       = new HardwarePushbot(); // use the class created to define a Pushbot's hardware
+    HardwarePushbot robot = new HardwarePushbot(); // use the class created to define a Pushbot's hardware
 
     /*
-    * Code to run ONCE when the driver hits INIT
-    */
+     * Code to run ONCE when the driver hits INIT
+     */
     //@Override
-    public void init() 
-    {
+    public void init() {
         /* Initialize the hardware variables.
-        * The init() method of the hardware class does all the work here
-        */
+         * The init() method of the hardware class does all the work here
+         */
         robot.init(hardwareMap);
     }
 
-    /*
-    * Code to run REPEATEDLY after the driver hits INIT, but before they hit PLAY
-    */
-    //@Override
-    public void init_loop() 
-    {
+    public void stop() {
+        robot.visionControl.close();
     }
 
     /*
-    * Code to run ONCE when the driver hits PLAY
-    */
+     * Code to run REPEATEDLY after the driver hits INIT, but before they hit PLAY
+     */
     //@Override
-    public void start() 
-    {
+    public void init_loop() {
     }
 
     /*
-    * Code to run REPEATEDLY after the driver hits PLAY but before they hit STOP
-    */
+     * Code to run ONCE when the driver hits PLAY
+     */
+    //@Override
+    public void start() {
+    }
+
+    /*
+     * Code to run REPEATEDLY after the driver hits PLAY but before they hit STOP
+     */
     // @Override
     public void loop() {
 
@@ -97,27 +95,4 @@ public class SteeringControls extends OpMode
 
         robot.driveTrain.drive(forward, strafe, turn);
     }
-    private void telemetryAprilTag() {
-        List<AprilTagDetection> currentDetections = robot.visionControl.getCurrentDetections();
-        telemetry.addData("# AprilTags Detected", currentDetections.size());
-
-        // Step through the list of detections and display info for each one.
-        for (AprilTagDetection detection : currentDetections) {
-            if (detection.metadata != null) {
-                telemetry.addLine(String.format("\n==== (ID %d) %s", detection.id, detection.metadata.name));
-                telemetry.addLine(String.format("XYZ %6.1f %6.1f %6.1f  (inch)", detection.ftcPose.x, detection.ftcPose.y, detection.ftcPose.z));
-                telemetry.addLine(String.format("PRY %6.1f %6.1f %6.1f  (deg)", detection.ftcPose.pitch, detection.ftcPose.roll, detection.ftcPose.yaw));
-                telemetry.addLine(String.format("RBE %6.1f %6.1f %6.1f  (inch, deg, deg)", detection.ftcPose.range, detection.ftcPose.bearing, detection.ftcPose.elevation));
-            } else {
-                telemetry.addLine(String.format("\n==== (ID %d) Unknown", detection.id));
-                telemetry.addLine(String.format("Center %6.0f %6.0f   (pixels)", detection.center.x, detection.center.y));
-            }
-        }   // end for() loop
-
-        // Add "key" information to telemetry
-        telemetry.addLine("\nkey:\nXYZ = X (Right), Y (Forward), Z (Up) dist.");
-        telemetry.addLine("PRY = Pitch, Roll & Yaw (XYZ Rotation)");
-        telemetry.addLine("RBE = Range, Bearing & Elevation");
-
-    }   // end method telemetryAprilTag()
-  }
+}
