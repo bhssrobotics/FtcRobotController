@@ -32,6 +32,8 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 
+import org.firstinspires.ftc.vision.apriltag.AprilTagPoseFtc;
+
 
 /**
 * This file provides basic Telop driving for a Pushbot robot.
@@ -94,5 +96,19 @@ public class SteeringControls extends OpMode {
 
 
         robot.driveTrain.drive(forward, strafe, turn);
+    }
+
+    public void launcherControls()
+    {
+        //check if left april tag
+        if(gamepad2.left_bumper)
+        {
+            AprilTagPoseFtc id= robot.visionControl.getDetectionsVal(24);
+        }
+        else if(gamepad2.right_bumper)
+        {
+            AprilTagPoseFtc id= robot.visionControl.getDetectionsVal(24);//change to correct val 
+        }
+
     }
 }
