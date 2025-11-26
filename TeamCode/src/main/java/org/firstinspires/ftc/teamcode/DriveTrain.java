@@ -91,6 +91,14 @@ public class DriveTrain
         rightBackDriveWheel.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
     }
 
+    public void runWithoutEncoders()
+    {
+        leftFrontDriveWheel.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        rightFrontDriveWheel.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        leftBackDriveWheel.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        rightBackDriveWheel.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+    }
+
     public void encoderDrive(boolean isActive, double speed, double leftInches, double rightInches, double timeoutS, String direction) //seems super important so I will not be deleting
     {
         //target for the encoder (wheels turn yippee)
@@ -104,7 +112,7 @@ public class DriveTrain
         int rbDirection;
         int lfDirection;
         int rfDirection;
-
+        runWithEncoders();
 
         if (direction.equals("FORWARD"))
         {
@@ -198,7 +206,7 @@ public class DriveTrain
             rightFrontDriveWheel.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
             leftBackDriveWheel.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
             rightBackDriveWheel.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-
+            runWithoutEncoders();
         }
     }
 }
