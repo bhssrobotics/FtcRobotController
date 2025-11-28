@@ -65,18 +65,18 @@ public class VisionControl
     }
 
     // give back all the AprilTags that we see in the list.
-    public List<AprilTagDetection> getCurrentDetections()
+    public List<AprilTagDetection> getCurrentDetections() //Find the right ID from the list
     {
-        List<AprilTagDetection> currentDetections = aprilTag.getDetections();
-        return currentDetections;
+        List<AprilTagDetection> currentDetections = aprilTag.getDetections(); //That ID is the April Tag
+        return currentDetections; //Return that ID
     }
 
-    public AprilTagPoseFtc getDetectionsVal(int id)
+    public AprilTagPoseFtc getDetectionsVal(int id) //Once the April Tag is found, get the values of the April Tag
     {
         List<AprilTagDetection> currentDetections = getCurrentDetections();
         for (AprilTagDetection detection : currentDetections)
         {
-            if (detection.metadata != null) {
+            if (detection.metadata != null) { //If values are detected and from right ID then return values
                 if (detection.id==id){
                     return detection.ftcPose;
                 }
@@ -84,8 +84,11 @@ public class VisionControl
             }
 
         }
-        return null;
+        return null; //Otherwise return nothing
     }
+
+    //public Object AprilTagPoseFtc() {
+    //}
 
     // Method from sample
 //    private void telemetryAprilTag() {
