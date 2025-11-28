@@ -80,13 +80,13 @@ public class Auto extends LinearOpMode {
     
     public void test() //used to be moveToBasket, old code reflects that, kept it as an example
           {
-            robot.driveTrain.encoderDrive(opModeIsActive(), 60, 65, 65, 30, "REVERSE"); //starts backwards so we gotta
+            robot.driveTrain.encoderDrive(opModeIsActive(), 60, 65, 30, "REVERSE"); //starts backwards so we gotta
             sleep(250);   // optional pause after each move.
-            robot.driveTrain.encoderDrive(opModeIsActive(),60, 35, 35, 30, "TURNRIGHT"); //turn it around
+            robot.driveTrain.encoderDrive(opModeIsActive(),60, 35, 30, "TURNRIGHT"); //turn it around
             sleep(250);   // optional pause after each move.
-            robot.driveTrain.encoderDrive(opModeIsActive(),60, 85, 85, 30, "FORWARD");
+            robot.driveTrain.encoderDrive(opModeIsActive(),60, 85, 30, "FORWARD");
             sleep(250);   // optional pause after each move.
-            robot.driveTrain. encoderDrive(opModeIsActive(),60,30,30,30,"RIGHT");
+            robot.driveTrain. encoderDrive(opModeIsActive(),60,30,30,"RIGHT");
             sleep(250);   // optional pause after each move.
           }
 
@@ -97,7 +97,7 @@ public class Auto extends LinearOpMode {
 
             //launch stuff here #figure out later - sleep commented out also for testing purposes
             //sleep(250);   // optional pause after each move.
-            robot.driveTrain. encoderDrive(opModeIsActive(),60,25,25,30,"LEFT");
+            robot.driveTrain. encoderDrive(opModeIsActive(),60,25,30,"LEFT");
             sleep(250);   // optional pause after each move.
             robot.driveTrain.encoderDrive(opModeIsActive(), 60, 1, 1, 30, "REVERSE");
             sleep(250);   // optional pause after each move.

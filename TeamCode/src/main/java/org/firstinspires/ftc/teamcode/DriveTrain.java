@@ -91,7 +91,7 @@ public class DriveTrain
         rightBackDriveWheel.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
     }
 
-    public void encoderDrive(boolean isActive, double speed, double leftInches, double rightInches, double timeoutS, String direction) //seems super important so I will not be deleting
+    public void encoderDrive(boolean isActive, double speed, double inches, double timeoutS, String direction) //seems super important so I will not be deleting
     {
         //target for the encoder (wheels turn yippee)
         int newLeftFrontTarget;
@@ -153,10 +153,10 @@ public class DriveTrain
         if (isActive)
         {
             // Determine new target position, and pass to motor controller
-            newLeftFrontTarget = leftFrontDriveWheel.getCurrentPosition() + (int)(leftInches * COUNTS_PER_INCH)* lfDirection;
-            newRightFrontTarget = rightFrontDriveWheel.getCurrentPosition() + (int)(rightInches * COUNTS_PER_INCH)* rfDirection;
-            newLeftBackTarget = leftBackDriveWheel.getCurrentPosition() + (int)(leftInches * COUNTS_PER_INCH)* lbDirection;
-            newRightBackTarget = rightBackDriveWheel.getCurrentPosition() + (int)(rightInches * COUNTS_PER_INCH)* rbDirection;
+            newLeftFrontTarget = leftFrontDriveWheel.getCurrentPosition() + (int)(inches * COUNTS_PER_INCH)* lfDirection;
+            newRightFrontTarget = rightFrontDriveWheel.getCurrentPosition() + (int)(inches * COUNTS_PER_INCH)* rfDirection;
+            newLeftBackTarget = leftBackDriveWheel.getCurrentPosition() + (int)(inches * COUNTS_PER_INCH)* lbDirection;
+            newRightBackTarget = rightBackDriveWheel.getCurrentPosition() + (int)(inches * COUNTS_PER_INCH)* rbDirection;
 
             leftFrontDriveWheel.setTargetPosition(newLeftFrontTarget);
             rightFrontDriveWheel.setTargetPosition(newRightFrontTarget);
