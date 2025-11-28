@@ -80,9 +80,7 @@ public class VisionControl
                 if (detection.id==id){
                     return detection.ftcPose;
                 }
-
             }
-
         }
         return null; //Otherwise return nothing
     }
