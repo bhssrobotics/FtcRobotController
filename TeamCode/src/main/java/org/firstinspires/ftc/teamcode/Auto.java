@@ -132,7 +132,7 @@ public class Auto extends LinearOpMode {
             //launch stuff here #figure out later - sleep commented out also for testing purposes
             //sleep(250);   // optional pause after each move.
             robot.driveTrain. encoderDrive(opModeIsActive(),60,21,30,"FORWARD");
-            sleep(10000000);   // optional pause after each move.
+            sleep(1000000000);   // optional pause after each move.
         }
 
         public void blueInnerSidewaysClose()
