@@ -60,7 +60,7 @@ public class Auto extends LinearOpMode {
         telemetry.update();
         waitForStart();
         
-        while (opModeIsActive()) 
+        while (opModeIsActive())
         {
             //put in auto path of choice here
             redInnerForwardClose(); //runs over and over, make sleep longer?
@@ -100,7 +100,7 @@ public class Auto extends LinearOpMode {
             robot.driveTrain. encoderDrive(opModeIsActive(),60,25,30,"LEFT");
             sleep(250);   // optional pause after each move.
             robot.driveTrain.encoderDrive(opModeIsActive(), 60, 1, 30, "REVERSE");
-            sleep(250);   // optional pause after each move.
+            sleep(100000000);   // sleep until teleOp mode
         }
           public void redInnerSidewaysLaunchClose()
           {
