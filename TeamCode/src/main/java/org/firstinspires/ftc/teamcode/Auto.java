@@ -170,7 +170,7 @@ public class Auto extends LinearOpMode {
             //move forward from start - combine with blue version?
 
             robot.driveTrain. encoderDrive(opModeIsActive(),60,21,30,"FORWARD");
-            sleep(250);   // optional pause after each move.
+            sleep(100000000);   // optional pause after each move.
         }
 
         public void blueOuterSidewaysLaunchClose()
