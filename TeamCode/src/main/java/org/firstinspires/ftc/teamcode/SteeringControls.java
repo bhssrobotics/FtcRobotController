@@ -110,10 +110,11 @@ public class SteeringControls extends OpMode
 
         if(gamepad1.aWasPressed()) //When the button on gamepad is pressed stuff below happens
         {
-            aprilTagAlignment(); //Going to this method (code below)
+            telemetry.addData("\n>","a was pressed");
             forward = drive; //Drive is from method which equals forward from our values
             pivot = turn; //Turn is from our method which equals pivot from our values
             strafe = 0; //Not using strafe
+            aprilTagAlignment(); //Going to this method (code below)
         }
         else //If button not pressed, controls on gamepad work normally
         {
