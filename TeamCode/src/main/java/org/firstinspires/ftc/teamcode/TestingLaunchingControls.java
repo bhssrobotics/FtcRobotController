@@ -31,6 +31,7 @@ package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.util.ElapsedTime;
 
 /**
 * This file provides basic Telop driving for a Pushbot robot.
@@ -52,6 +53,9 @@ public class TestingLaunchingControls extends OpMode
 {
     /* Declare OpMode members. */
     HardwarePushbot robot       = new HardwarePushbot(); // use the class created to define a Pushbot's hardware
+    ElapsedTime runtime = new ElapsedTime();
+    double delayTime = 0;
+    final double PAUSE_TIME = 5;
     double speed=0;
     /*
     * Code to run ONCE when the driver hits INIT
@@ -96,18 +100,25 @@ public class TestingLaunchingControls extends OpMode
         //press the button to start the launcher code
         if (gamepad2.right_bumper) //if i press the right bumper
         {
-            //set to full power
-            robot.launcher.setFlywheelSpeed(0.75);
-            robot.launcher.setAgitatorSpeed(1);
-            robot.launcher.setShooterIntakeSpeed(0.5);
+            telemetry.addData("current state: ", robot.launcher.getState());
+            if(robot.launcher.readyToLaunch())
+            {
+                //set to full power
+                robot.launcher.warmingUp();
+                delayTime = runtime.seconds() + PAUSE_TIME;
+            }
         }
         else if (gamepad2.left_bumper) //if i press the left bumper
         {
-            //turn off the launching moter
-            robot.launcher.setFlywheelSpeed(0);
-            robot.launcher.setAgitatorSpeed(0);
-            robot.launcher.setShooterIntakeSpeed(0);
+            //turn off the launching motor
+            robot.launcher.notLaunching();
         }
+
+        if(robot.launcher.isWarmingUp() && runtime.seconds() >= delayTime)
+        {
+            robot.launcher.launching();
+        }
+
 
 
     }

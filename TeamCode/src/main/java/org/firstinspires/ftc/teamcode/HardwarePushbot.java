@@ -66,7 +66,7 @@ public class HardwarePushbot {
         /* Initialize standard Hardware interfaces */
         public void init(HardwareMap ahwMap) 
         {
-            launcher= new BasicBot_Launcher(ahwMap, 0, 0,0);
+            launcher= new BasicBot_Launcher(ahwMap);
 
             driveTrain = new DriveTrain(ahwMap);
         }
