@@ -29,8 +29,8 @@
 
 package org.firstinspires.ftc.teamcode;
 
-import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
+import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 /**
@@ -48,16 +48,15 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
 */
 
-@TeleOp(name="Steering Controls", group="Pushbot")
-public class SteeringControls extends OpMode
+@TeleOp(name="Testing Launching Controls", group="Pushbot")
+public class TestingLaunchingControls extends OpMode
 {
     /* Declare OpMode members. */
     HardwarePushbot robot       = new HardwarePushbot(); // use the class created to define a Pushbot's hardware
-    double speed=0;
-
     ElapsedTime runtime = new ElapsedTime();
     double delayTime = 0;
     final double PAUSE_TIME = 5;
+    double speed=0;
     /*
     * Code to run ONCE when the driver hits INIT
     */
@@ -67,8 +66,8 @@ public class SteeringControls extends OpMode
         /* Initialize the hardware variables.
         * The init() method of the hardware class does all the work here
         */
-        robot.init(hardwareMap);
-    }//end of init
+        robot.init(hardwareMap); //hi
+    }
 
     /*
     * Code to run REPEATEDLY after the driver hits INIT, but before they hit PLAY
@@ -76,7 +75,7 @@ public class SteeringControls extends OpMode
     //@Override
     public void init_loop() 
     {
-    }//end of init loop
+    }
 
     /*
     * Code to run ONCE when the driver hits PLAY
@@ -84,51 +83,43 @@ public class SteeringControls extends OpMode
     //@Override
     public void start() 
     {
-    }//end of start
+    }
 
     /*
     * Code to run REPEATEDLY after the driver hits PLAY but before they hit STOP
     */
     // @Override
-    public void loop()
-    {
-        drive();
-        launch();
-    } //end of loop
+    public void loop() {
 
-        public void drive()
+        double forward = -gamepad1.left_stick_y; //strafing left and right
+        double strafe = gamepad1.left_stick_x; //
+        double turn = gamepad1.right_stick_x; //backwards and forwards
+
+
+        robot.driveTrain.drive(forward, strafe, turn);
+        //press the button to start the launcher code
+        if (gamepad2.right_bumper) //if i press the right bumper
         {
-            double forward = -gamepad1.left_stick_y; //strafing left and right
-            double strafe = -gamepad1.left_stick_x; //
-            double turn = gamepad1.right_stick_x; //backwards and forwards
-
-            robot.driveTrain.drive(forward, strafe, turn);
-        }//end of drive
-
-        public void launch()
+            telemetry.addData("current state: ", robot.launcher.getState());
+            if(robot.launcher.readyToLaunch())
+            {
+                //set to full power
+                robot.launcher.warmingUp();
+                delayTime = runtime.seconds() + PAUSE_TIME;
+            }
+        }
+        else if (gamepad2.left_bumper) //if i press the left bumper
         {
-            //press the button to start the launcher code
-            if (gamepad2.right_bumper) //if i press the right bumper
-            {
-                telemetry.addData("current state: ", robot.launcher.getState());
-                if(robot.launcher.readyToLaunch())
-                {
-                    //set to full power
-                    robot.launcher.warmingUp();
-                    delayTime = runtime.seconds() + PAUSE_TIME;
-                } //end of if ready to launch
-            }//end of gamepad 2 right bumper
-            else if (gamepad2.left_bumper) //if i press the left bumper
-            {
-                //turn off the launching motor
-                robot.launcher.notLaunching();
-            }//end of gamepad 2 left bumper
+            //turn off the launching motor
+            robot.launcher.notLaunching();
+        }
 
-            if(robot.launcher.isWarmingUp() && runtime.seconds() >= delayTime)
-            {
-                robot.launcher.launching();
-            }//end of if is warming up
-        } //end of launch
+        if(robot.launcher.isWarmingUp() && runtime.seconds() >= delayTime)
+        {
+            robot.launcher.launching();
+        }
 
-    } //end of steering controls
-  
+
+
+    }
+  }
