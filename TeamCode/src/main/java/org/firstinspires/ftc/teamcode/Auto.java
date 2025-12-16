@@ -48,6 +48,10 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 public class Auto extends LinearOpMode {
     HardwarePushbot robot       = new HardwarePushbot(); // use the class created to define a Pushbot's hardware
 
+    ElapsedTime runtime = new ElapsedTime();
+    double delayTime = 0;
+    final double PAUSE_TIME = 5;
+
     @Override
     public void runOpMode()
     {
@@ -89,14 +93,38 @@ public class Auto extends LinearOpMode {
             robot.driveTrain. encoderDrive(opModeIsActive(),60,30,30,"RIGHT");
             sleep(250);   // optional pause after each move.
           }
+    public void launch()
+    {
+        int forceQuitMan = 0;
+        robot.launcher.warmingUp();
+        //delayTime = runtime.seconds() + PAUSE_TIME;
 
+        /*while(!(runtime.seconds() >= delayTime) || forceQuitMan < 1500)
+        {
+            //NO
+            forceQuitMan++;
+        }//end of if is warming up
+        */
+
+        sleep((int)PAUSE_TIME);
+
+        robot.launcher.launching();
+    }
+
+    public void stopLaunch()
+    {
+        robot.launcher.notLaunching();
+    }
         public void blueInnerSidewaysLaunchClose()
         {
             //launch (vaguely to the left - maybe turn?), strafe left from start, get in the way
             //of red alliance's launch zone (see Emily's diagrams), then straighten out
 
             //launch stuff here #figure out later - sleep commented out also for testing purposes
-            //sleep(250);   // optional pause after each move.
+            //rotationy
+            launch();
+            stopLaunch();
+            sleep(250);   // optional pause after each move.
             robot.driveTrain. encoderDrive(opModeIsActive(),60,25,30,"LEFT");
             sleep(250);   // optional pause after each move.
             robot.driveTrain.encoderDrive(opModeIsActive(), 60, 1, 30, "REVERSE");
@@ -108,7 +136,10 @@ public class Auto extends LinearOpMode {
               //of blue alliance's launch zone (see Emily's diagrams), then straighten out
 
               //launch stuff here #figure out later - sleep commented out also for testing purposes
-              //sleep(250);   // optional pause after each move.
+              //rotationy
+              launch();
+              stopLaunch();
+              sleep(250);   // optional pause after each move.
               robot.driveTrain. encoderDrive(opModeIsActive(),60,25,30,"RIGHT");
               sleep(250);   // optional pause after each move.
               robot.driveTrain.encoderDrive(opModeIsActive(), 60, 1, 30, "REVERSE");
@@ -120,7 +151,10 @@ public class Auto extends LinearOpMode {
             //launch (vaguely to the left - maybe turn?, move forward from start
 
             //launch stuff here #figure out later - sleep commented out also for testing purposes
-             //sleep(250);   // optional pause after each move.
+             //rotationy
+             launch();
+             stopLaunch();
+             sleep(250);   // optional pause after each move.
              robot.driveTrain. encoderDrive(opModeIsActive(),60,21,30,"FORWARD");
              sleep(10000000);   // optional pause after each move.
          }
@@ -130,7 +164,10 @@ public class Auto extends LinearOpMode {
             //launch (vaguely to the right - maybe turn?, move forward from start
 
             //launch stuff here #figure out later - sleep commented out also for testing purposes
-            //sleep(250);   // optional pause after each move.
+            //rotationy
+            launch();
+            stopLaunch();
+            sleep(250);   // optional pause after each move.
             robot.driveTrain. encoderDrive(opModeIsActive(),60,21,30,"FORWARD");
             sleep(1000000000);   // optional pause after each move.
         }
@@ -179,7 +216,10 @@ public class Auto extends LinearOpMode {
             //(veer slightly right) alliance's base (see Emily's diagrams), then straighten out
 
             //launch stuff here #figure out later - sleep commented out also for testing purposes
-            //sleep(250);   // optional pause after each move.
+            //rotationy
+            launch();
+            stopLaunch();
+            sleep(250);   // optional pause after each move.
             robot.driveTrain. encoderDrive(opModeIsActive(),60,18,30,"LEFT");
             sleep(250);   // optional pause after each move.
             robot.driveTrain.encoderDrive(opModeIsActive(), 60, 1,30, "REVERSE");
@@ -192,7 +232,10 @@ public class Auto extends LinearOpMode {
             //(veer slightly left) alliance's base (see Emily's diagrams), then straighten out
 
             //launch stuff here #figure out later - sleep commented out also for testing purposes
-            //sleep(250);   // optional pause after each move.
+            //rotationy
+            launch();
+            stopLaunch();
+            sleep(250);   // optional pause after each move.
             robot.driveTrain. encoderDrive(opModeIsActive(),60,18,30,"RIGHT");
             sleep(250);   // optional pause after each move.
             robot.driveTrain.encoderDrive(opModeIsActive(), 60, 1, 30, "REVERSE");
@@ -205,7 +248,10 @@ public class Auto extends LinearOpMode {
             //(veer slightly right) alliance's base (see Emily's diagrams)
 
             //launch stuff here #figure out later - sleep commented out also for testing purposes
-            //sleep(250);   // optional pause after each move.
+            //rotationy
+            launch();
+            stopLaunch();
+            sleep(250);   // optional pause after each move.
             robot.driveTrain. encoderDrive(opModeIsActive(),60,3,30,"RIGHT");
             sleep(250);   // optional pause after each move.
             robot.driveTrain. encoderDrive(opModeIsActive(),60,24,30,"FORWARD");
@@ -218,7 +264,10 @@ public class Auto extends LinearOpMode {
             //(veer slightly left) alliance's base (see Emily's diagrams)
 
             //launch stuff here #figure out later - sleep commented out also for testing purposes
-            //sleep(250);   // optional pause after each move.
+            //rotationy
+            launch();
+            stopLaunch();
+            sleep(250);   // optional pause after each move.
             robot.driveTrain. encoderDrive(opModeIsActive(),60,3,30,"LEFT");
             sleep(250);   // optional pause after each move.
             robot.driveTrain. encoderDrive(opModeIsActive(),60,24,30,"FORWARD");
