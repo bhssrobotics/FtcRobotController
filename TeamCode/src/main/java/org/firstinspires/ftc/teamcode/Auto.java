@@ -63,7 +63,7 @@ public class Auto extends LinearOpMode {
         while (opModeIsActive())
         {
             //put in auto path of choice here
-            redInnerForwardClose(); //runs over and over, make sleep longer?
+            redInnerForwardClose();
 
           
         telemetry.update();
@@ -112,7 +112,7 @@ public class Auto extends LinearOpMode {
               robot.driveTrain. encoderDrive(opModeIsActive(),60,25,30,"RIGHT");
               sleep(250);   // optional pause after each move.
               robot.driveTrain.encoderDrive(opModeIsActive(), 60, 1, 30, "REVERSE");
-              sleep(250);   // optional pause after each move.
+              sleep(10000000);   // optional pause after each move.
           }
 
          public void blueInnerForwardLaunchClose()
@@ -122,7 +122,7 @@ public class Auto extends LinearOpMode {
             //launch stuff here #figure out later - sleep commented out also for testing purposes
              //sleep(250);   // optional pause after each move.
              robot.driveTrain. encoderDrive(opModeIsActive(),60,21,30,"FORWARD");
-             sleep(250);   // optional pause after each move.
+             sleep(10000000);   // optional pause after each move.
          }
 
         public void redInnerForwardLaunchClose()
@@ -143,7 +143,7 @@ public class Auto extends LinearOpMode {
             robot.driveTrain. encoderDrive(opModeIsActive(),60,25,30,"LEFT");
             sleep(250);   // optional pause after each move.
             robot.driveTrain.encoderDrive(opModeIsActive(), 60, 1, 30, "REVERSE");
-            sleep(250);   // optional pause after each move.
+            sleep(10000000);   // optional pause after each move.
         }
 
         public void redInnerSidewaysClose()
@@ -154,7 +154,7 @@ public class Auto extends LinearOpMode {
             robot.driveTrain. encoderDrive(opModeIsActive(),60,25,30,"RIGHT");
             sleep(250);   // optional pause after each move.
             robot.driveTrain.encoderDrive(opModeIsActive(), 60, 1, 30, "REVERSE");
-            sleep(250);   // optional pause after each move.
+            sleep(10000000);   // optional pause after each move.
         }
 
         public void blueInnerForwardClose()
@@ -162,7 +162,7 @@ public class Auto extends LinearOpMode {
             //move forward from start - combine with red version?
 
             robot.driveTrain. encoderDrive(opModeIsActive(),60,21,30,"FORWARD");
-            sleep(250);   // optional pause after each move.
+            sleep(10000000);   // optional pause after each move.
         }
 
         public void redInnerForwardClose()
@@ -183,7 +183,7 @@ public class Auto extends LinearOpMode {
             robot.driveTrain. encoderDrive(opModeIsActive(),60,18,30,"LEFT");
             sleep(250);   // optional pause after each move.
             robot.driveTrain.encoderDrive(opModeIsActive(), 60, 1,30, "REVERSE");
-            sleep(250);   // optional pause after each move.
+            sleep(10000000);   // optional pause after each move.
         }
 
         public void redOuterSidewaysLaunchClose()
@@ -196,7 +196,7 @@ public class Auto extends LinearOpMode {
             robot.driveTrain. encoderDrive(opModeIsActive(),60,18,30,"RIGHT");
             sleep(250);   // optional pause after each move.
             robot.driveTrain.encoderDrive(opModeIsActive(), 60, 1, 30, "REVERSE");
-            sleep(250);   // optional pause after each move.
+            sleep(10000000);   // optional pause after each move.
         }
 
         public void blueOuterForwardLaunchClose()
@@ -209,7 +209,7 @@ public class Auto extends LinearOpMode {
             robot.driveTrain. encoderDrive(opModeIsActive(),60,3,30,"RIGHT");
             sleep(250);   // optional pause after each move.
             robot.driveTrain. encoderDrive(opModeIsActive(),60,24,30,"FORWARD");
-            sleep(250);   // optional pause after each move.
+            sleep(10000000);   // optional pause after each move.
         }
 
         public void redOuterForwardLaunchClose()
@@ -222,7 +222,7 @@ public class Auto extends LinearOpMode {
             robot.driveTrain. encoderDrive(opModeIsActive(),60,3,30,"LEFT");
             sleep(250);   // optional pause after each move.
             robot.driveTrain. encoderDrive(opModeIsActive(),60,24,30,"FORWARD");
-            sleep(250);   // optional pause after each move.
+            sleep(10000000);   // optional pause after each move.
         }
 
         public void blueOuterSidewaysClose()
@@ -233,7 +233,7 @@ public class Auto extends LinearOpMode {
             robot.driveTrain. encoderDrive(opModeIsActive(),60,18,30,"LEFT");
             sleep(250);   // optional pause after each move.
             robot.driveTrain.encoderDrive(opModeIsActive(), 60, 1, 30, "REVERSE");
-            sleep(250);   // optional pause after each move.
+            sleep(10000000);   // optional pause after each move.
         }
 
         public void redOuterSidewaysClose()
@@ -244,7 +244,7 @@ public class Auto extends LinearOpMode {
             robot.driveTrain. encoderDrive(opModeIsActive(),60,18,30,"RIGHT");
             sleep(250);   // optional pause after each move.
             robot.driveTrain.encoderDrive(opModeIsActive(), 60, 1, 30, "REVERSE");
-            sleep(250);   // optional pause after each move.
+            sleep(10000000);   // optional pause after each move.
         }
 
         public void blueOuterForwardClose()
@@ -254,7 +254,7 @@ public class Auto extends LinearOpMode {
             robot.driveTrain. encoderDrive(opModeIsActive(),60,18,30,"RIGHT");
             sleep(250);   // optional pause after each move.
             robot.driveTrain.encoderDrive(opModeIsActive(), 60, 1, 30, "REVERSE");
-            sleep(250);   // optional pause after each move.
+            sleep(10000000);   // optional pause after each move.
         }
 
         public void redOuterForwardClose()
@@ -264,7 +264,7 @@ public class Auto extends LinearOpMode {
             robot.driveTrain. encoderDrive(opModeIsActive(),60,18,30,"LEFT");
             sleep(250);   // optional pause after each move.
             robot.driveTrain.encoderDrive(opModeIsActive(), 60, 1,30, "REVERSE");
-            sleep(250);   // optional pause after each move.
+            sleep(10000000);   // optional pause after each move.
         }
   }
 // end class
