@@ -81,7 +81,7 @@ public class Auto extends LinearOpMode {
     //  *  2) Move runs out of time
     //  *  3) Driver stops the OpMode running.
     //  */
-    
+
     public void test() //used to be moveToBasket, old code reflects that, kept it as an example
           {
             robot.driveTrain.encoderDrive(opModeIsActive(), 60, 65, 30, "REVERSE"); //starts backwards so we gotta
@@ -120,10 +120,13 @@ public class Auto extends LinearOpMode {
             //launch (vaguely to the left - maybe turn?), strafe left from start, get in the way
             //of red alliance's launch zone (see Emily's diagrams), then straighten out
 
-            //launch stuff here #figure out later - sleep commented out also for testing purposes
-            //rotationy
+            //this version contains rotation that hasn't been tested, please test first before adding rotations to the rest.
+            robot.driveTrain.encoderDrive(opModeIsActive(),60, 9, 30, "TURNLEFT"); //rotate slightly for aim
+            sleep(250);   // optional pause after each move.
             launch();
             stopLaunch();
+            sleep(250);   // optional pause after each move.
+            robot.driveTrain.encoderDrive(opModeIsActive(),60, 9, 30, "TURNRIGHT"); //rotate back to be in position
             sleep(250);   // optional pause after each move.
             robot.driveTrain. encoderDrive(opModeIsActive(),60,25,30,"LEFT");
             sleep(250);   // optional pause after each move.
