@@ -120,14 +120,14 @@ public class DriveTrain
             lfDirection = -1;
             rfDirection = -1; //1
         }
-        else if (direction.equals("LEFT"))
+        else if (direction.equals("RIGHT"))
         {
             lbDirection = 1; //1
             rbDirection =  -1; //-1
             lfDirection =  -1; //-1
             rfDirection = 1;
         }
-        else if (direction.equals("RIGHT"))
+        else if (direction.equals("LEFT"))
         {
             lbDirection = -1;
             rbDirection = 1;
