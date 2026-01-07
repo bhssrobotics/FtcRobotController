@@ -57,7 +57,7 @@ public class VisionTesting extends OpMode
     HardwarePushbot robot       = new HardwarePushbot(); // use the class created to define a Pushbot's hardware
     boolean targetFound     = false;    // Set to true when an AprilTag target is detected
     AprilTagPoseFtc pose;
-    final float DESIRED_DISTANCE = 5;
+    final float DESIRED_DISTANCE = 116;
     final double SPEED_GAIN =   0.02 ;   //  Speed Control "Gain". e.g. Ramp up to 50% power at a 25 inch error.   (0.50 / 25.0)
     final double TURN_GAIN  =   0.01 ;   //  Turn Control "Gain".  e.g. Ramp up to 25% power at a 25 degree error. (0.25 / 25.0)
 
@@ -105,13 +105,24 @@ public class VisionTesting extends OpMode
     // @Override
     public void loop() {
 
-        if(gamepad1.aWasPressed()) //When the button on gamepad is pressed stuff below happens
+        if(gamepad1.bWasPressed()) //When the button on gamepad is pressed stuff below happens
         {
-            telemetry.addData("\n>","a was pressed");
+            telemetry.addData("\n>","b was pressed");
+            aprilTagAlignment(24); //Going to this method (code below)v
+            forward = drive; //Drive is from method which equals forward from our values
+            pivot = turn; //Turn is from our method
+            // which equals pivot from our values
+            strafe = 0; //Not using strafe
+
+        }
+        else if(gamepad1.xWasPressed()) //When the button on gamepad is pressed stuff below happens
+        {
+            telemetry.addData("\n>","x was pressed");
+            aprilTagAlignment(25); //Going to this method (code below)
             forward = drive; //Drive is from method which equals forward from our values
             pivot = turn; //Turn is from our method which equals pivot from our values
             strafe = 0; //Not using strafe
-            aprilTagAlignment(); //Going to this method (code below)
+
         }
         else //If button not pressed, controls on gamepad work normally
         {
@@ -120,7 +131,9 @@ public class VisionTesting extends OpMode
             pivot = gamepad1.right_stick_x; //backwards and forwards
         }
 
+        //telemetry.addData("Driving","Forward %5.2f, Strafe %5.2f, Pivot %5.2f", forward, strafe, pivot);
         robot.driveTrain.drive(forward, strafe, pivot);
+        //telemetry.update();
     }
     /*
     private void telemetryAprilTag() { //Telemetry sends data to the driver hub and displays text on the screen
@@ -149,19 +162,20 @@ public class VisionTesting extends OpMode
 
      */
 
-    private void aprilTagAlignment(){ //This is the method called above to calculate where robot needs to go based on desired distance
+    private void aprilTagAlignment(int id){ //This is the method called above to calculate where robot needs to go based on desired distance
         // Tell the driver what we see, and what to do.
-        pose = robot.visionControl.getDetectionsVal(24); //Getting values from VisionControl class of the April Tag ID
+        pose = robot.visionControl.getDetectionsVal(id); //Getting values from VisionControl class of the April Tag ID
         if (pose!=null) { //If there are values
             targetFound = true; //Then target is found
-            telemetry.addData("\n>","HOLD Left-Bumper to Drive to Target\n"); //Hold down left bumper to activate code below
+            telemetry.addData("\n>","Target found\n"); //Hold down left bumper to activate code below
 
         } else { //If there aren't any values
             telemetry.addData("\n>","Drive using joysticks to find valid target\n"); //Then adjust to find values
+            targetFound = false;
         }
 
         // If Left Bumper is being pressed, AND we have found the desired target, Drive to target Automatically .
-        if (gamepad1.left_bumper && targetFound) {
+        if (targetFound) {
 
             //Lots of math stuff
             // Determine heading and range error so we can use them to control the robot automatically.
