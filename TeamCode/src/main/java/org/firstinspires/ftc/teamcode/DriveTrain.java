@@ -201,4 +201,31 @@ public class DriveTrain
 
         }
     }
+
+        //for apriltag movements
+    public void moveRobot(double x, double y, double yaw) {
+        // Calculate wheel powers.
+        double frontLeftPower    =  x - y - yaw;
+        double frontRightPower   =  x + y + yaw;
+        double backLeftPower     =  x + y - yaw;
+        double backRightPower    =  x - y + yaw;
+
+        // Normalize wheel powers to be less than 1.0
+        double max = Math.max(Math.abs(frontLeftPower), Math.abs(frontRightPower));
+        max = Math.max(max, Math.abs(backLeftPower));
+        max = Math.max(max, Math.abs(backRightPower));
+
+        if (max > 1.0) {
+            frontLeftPower /= max;
+            frontRightPower /= max;
+            backLeftPower /= max;
+            backRightPower /= max;
+        }
+
+        // Send powers to the wheels.
+        leftFrontDriveWheel.setPower(frontLeftPower);
+        rightFrontDriveWheel.setPower(frontRightPower);
+        leftBackDriveWheel.setPower(backLeftPower);
+        rightBackDriveWheel.setPower(backRightPower);
+    }
 }

@@ -31,9 +31,13 @@ package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
-
+import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import org.firstinspires.ftc.vision.apriltag.AprilTagPoseFtc;
+import com.qualcomm.robotcore.util.ElapsedTime;
+import java.util.concurrent.TimeUnit;
+
 
 /**
 * This file provides basic Telop driving for a Pushbot robot.
@@ -60,14 +64,20 @@ public class VisionTesting extends OpMode
     final float DESIRED_DISTANCE = 116;
     final double SPEED_GAIN =   0.02 ;   //  Speed Control "Gain". e.g. Ramp up to 50% power at a 25 inch error.   (0.50 / 25.0)
     final double TURN_GAIN  =   0.01 ;   //  Turn Control "Gain".  e.g. Ramp up to 25% power at a 25 degree error. (0.25 / 25.0)
-
+    final double STRAFE_GAIN =  0.015 ;   //  Strafe Speed Control "Gain".  e.g. Ramp up to 37% power at a 25 degree Yaw error.   (0.375 / 25.0)
     final double MAX_AUTO_SPEED = 0.5;   //  Clip the approach speed to this max value (adjust for your robot)
     final double MAX_AUTO_TURN  = 0.25;  //  Clip the turn speed to this max value (adjust for your robot)
+    final double MAX_AUTO_STRAFE= 0.5;   //  Clip the strafing speed to this max value (adjust for your robot)
     double  drive           = 0;        // Desired forward power/speed (-1 to +1) +ve is forward
     double  turn            = 0;        // Desired turning power/speed (-1 to +1) +ve is CounterClockwise
+    ElapsedTime runtime = new ElapsedTime();
+    double delayTime = 0;
+    final double PAUSE_TIME = 10;
+
+    int drivingState= 0; //0 is normal driving, 1 is launching
 
     double forward; //strafing left and right
-    double strafe; //
+    double strafe=0; //
     double pivot;
 
 
@@ -105,34 +115,40 @@ public class VisionTesting extends OpMode
     // @Override
     public void loop() {
 
-        if(gamepad1.bWasPressed()) //When the button on gamepad is pressed stuff below happens
+        if(drivingState==0)
         {
-            telemetry.addData("\n>","b was pressed");
-            aprilTagAlignment(24); //Going to this method (code below)v
-            forward = drive; //Drive is from method which equals forward from our values
-            pivot = turn; //Turn is from our method
-            // which equals pivot from our values
-            strafe = 0; //Not using strafe
+            if (gamepad1.bWasPressed()) //When the button on gamepad is pressed stuff below happens
+            {
+                telemetry.addData("\n>", "b was pressed");
+                aprilTagAlignment(24); //Going to this method (code below)v
+                drivingState = 1;
+                delayTime= runtime.seconds() + PAUSE_TIME;
+                // which equals pivot from our values
+            } else if (gamepad1.xWasPressed()) //When the button on gamepad is pressed stuff below happens
+            {
+                telemetry.addData("\n>", "x was pressed");
+                aprilTagAlignment(25); //Going to this method (code below)
+                drivingState = 1;
+                delayTime= runtime.seconds() + PAUSE_TIME;
 
+            } else //If button not pressed, controls on gamepad work normally
+            {
+                forward = -gamepad1.left_stick_y; //Moving left and right
+                strafe = gamepad1.left_stick_x; // Moving side to side
+                pivot = gamepad1.right_stick_x; //backwards and forwards
+            }
         }
-        else if(gamepad1.xWasPressed()) //When the button on gamepad is pressed stuff below happens
+        else
         {
-            telemetry.addData("\n>","x was pressed");
-            aprilTagAlignment(25); //Going to this method (code below)
-            forward = drive; //Drive is from method which equals forward from our values
-            pivot = turn; //Turn is from our method which equals pivot from our values
-            strafe = 0; //Not using strafe
-
-        }
-        else //If button not pressed, controls on gamepad work normally
-        {
-            forward = -gamepad1.left_stick_y; //Moving left and right
-            strafe = gamepad1.left_stick_x; // Moving side to side
-            pivot = gamepad1.right_stick_x; //backwards and forwards
+            robot.driveTrain.drive(forward, strafe, pivot);
+            robot.driveTrain.moveRobot(forward, strafe, pivot);
+            if(runtime.seconds() >= delayTime)
+            {
+                drivingState = 0;
+            }
         }
 
         //telemetry.addData("Driving","Forward %5.2f, Strafe %5.2f, Pivot %5.2f", forward, strafe, pivot);
-        robot.driveTrain.drive(forward, strafe, pivot);
         //telemetry.update();
     }
     /*
@@ -181,19 +197,24 @@ public class VisionTesting extends OpMode
             // Determine heading and range error so we can use them to control the robot automatically.
             double  rangeError   = (pose.range - DESIRED_DISTANCE);
             double  headingError = pose.bearing;
+            double  yawError     = pose.yaw;
 
             // Use the speed and turn "gains" to calculate how we want the robot to move.  Clip it to the maximum
-            drive = Range.clip(rangeError * SPEED_GAIN, -MAX_AUTO_SPEED, MAX_AUTO_SPEED);
-            turn  = Range.clip(headingError * TURN_GAIN, -MAX_AUTO_TURN, MAX_AUTO_TURN) ;
+            forward = Range.clip(rangeError * SPEED_GAIN, -MAX_AUTO_SPEED, MAX_AUTO_SPEED);
+            pivot  = Range.clip(headingError * TURN_GAIN, -MAX_AUTO_TURN, MAX_AUTO_TURN) ;
+            strafe = Range.clip(-yawError * STRAFE_GAIN, -MAX_AUTO_STRAFE, MAX_AUTO_STRAFE);
 
             telemetry.addData("Auto","Drive %5.2f, Turn %5.2f", drive, turn);
         } else { //If left bumper not pressed and it doesn't find target then it will go back to normal driver controls but go slower
 
             // drive using manual POV Joystick mode.
-            drive = -gamepad1.left_stick_y  / 2.0;  // Reduce drive rate to 50%.
-            turn  = -gamepad1.right_stick_x / 4.0;  // Reduce turn rate to 25%.
-            telemetry.addData("Manual","Drive %5.2f, Turn %5.2f", drive, turn);
+            forward = -gamepad1.left_stick_y  / 2.0;  // Reduce drive rate to 50%.
+            strafe = -gamepad1.left_stick_x  / 2.0;  // Reduce strafe rate to 50%.
+            pivot  = -gamepad1.right_stick_x / 4.0;  // Reduce turn rate to 25%.
+            telemetry.addData("Manual","Drive %5.2f, Turn %5.2f", forward, pivot);
         }
         telemetry.update();
+
+
     }
   }
