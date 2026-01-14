@@ -36,7 +36,10 @@ import com.qualcomm.robotcore.util.Range;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import org.firstinspires.ftc.vision.apriltag.AprilTagPoseFtc;
 import com.qualcomm.robotcore.util.ElapsedTime;
+
+import java.util.List;
 import java.util.concurrent.TimeUnit;
+import org.firstinspires.ftc.vision.apriltag.AprilTagDetection;
 
 
 /**
@@ -61,7 +64,9 @@ public class VisionTesting extends OpMode
     HardwarePushbot robot       = new HardwarePushbot(); // use the class created to define a Pushbot's hardware
     boolean targetFound     = false;    // Set to true when an AprilTag target is detected
     AprilTagPoseFtc pose;
-    final float DESIRED_DISTANCE = 116;
+    final float DESIRED_DISTANCE = 112;
+    final float DESIRED_YAW = -9;
+    final double DESIRED_BEARING = 10.7;
     final double SPEED_GAIN =   0.02 ;   //  Speed Control "Gain". e.g. Ramp up to 50% power at a 25 inch error.   (0.50 / 25.0)
     final double TURN_GAIN  =   0.01 ;   //  Turn Control "Gain".  e.g. Ramp up to 25% power at a 25 degree error. (0.25 / 25.0)
     final double STRAFE_GAIN =  0.015 ;   //  Strafe Speed Control "Gain".  e.g. Ramp up to 37% power at a 25 degree Yaw error.   (0.375 / 25.0)
@@ -75,6 +80,7 @@ public class VisionTesting extends OpMode
     final double PAUSE_TIME = 10;
 
     int drivingState= 0; //0 is normal driving, 1 is launching
+
 
     double forward; //strafing left and right
     double strafe=0; //
@@ -114,21 +120,19 @@ public class VisionTesting extends OpMode
     */
     // @Override
     public void loop() {
-
+        telemetryAprilTag();
         if(drivingState==0)
         {
             if (gamepad1.bWasPressed()) //When the button on gamepad is pressed stuff below happens
             {
                 telemetry.addData("\n>", "b was pressed");
-                aprilTagAlignment(24); //Going to this method (code below)v
-                drivingState = 1;
+                drivingState = aprilTagAlignment(24); //Going to this method (code below)v
                 delayTime= runtime.seconds() + PAUSE_TIME;
                 // which equals pivot from our values
             } else if (gamepad1.xWasPressed()) //When the button on gamepad is pressed stuff below happens
             {
                 telemetry.addData("\n>", "x was pressed");
-                aprilTagAlignment(25); //Going to this method (code below)
-                drivingState = 1;
+                drivingState = aprilTagAlignment(25); //Going to this method (code below)
                 delayTime= runtime.seconds() + PAUSE_TIME;
 
             } else //If button not pressed, controls on gamepad work normally
@@ -136,22 +140,23 @@ public class VisionTesting extends OpMode
                 forward = -gamepad1.left_stick_y; //Moving left and right
                 strafe = gamepad1.left_stick_x; // Moving side to side
                 pivot = gamepad1.right_stick_x; //backwards and forwards
+                robot.driveTrain.drive(forward, strafe, pivot);
             }
         }
         else
         {
-            robot.driveTrain.drive(forward, strafe, pivot);
             robot.driveTrain.moveRobot(forward, strafe, pivot);
-            if(runtime.seconds() >= delayTime)
-            {
-                drivingState = 0;
-            }
+//            if(runtime.seconds() >= delayTime)
+//            {
+//                drivingState = 0;
+//            }
+            drivingState = aprilTagAlignment(drivingState); //Going to this method (code below)
         }
 
         //telemetry.addData("Driving","Forward %5.2f, Strafe %5.2f, Pivot %5.2f", forward, strafe, pivot);
         //telemetry.update();
     }
-    /*
+
     private void telemetryAprilTag() { //Telemetry sends data to the driver hub and displays text on the screen
         List<AprilTagDetection> currentDetections = robot.visionControl.getCurrentDetections();
         telemetry.addData("# AprilTags Detected", currentDetections.size());
@@ -174,16 +179,21 @@ public class VisionTesting extends OpMode
         telemetry.addLine("PRY = Pitch, Roll & Yaw (XYZ Rotation)");
         telemetry.addLine("RBE = Range, Bearing & Elevation");
 
+        telemetry.update();
+
     }   // end method telemetryAprilTag()
 
-     */
 
-    private void aprilTagAlignment(int id){ //This is the method called above to calculate where robot needs to go based on desired distance
+
+    private int aprilTagAlignment(int id){ //This is the method called above to calculate where robot needs to go based on desired distance
         // Tell the driver what we see, and what to do.
         pose = robot.visionControl.getDetectionsVal(id); //Getting values from VisionControl class of the April Tag ID
+        int foundtag = 0;
         if (pose!=null) { //If there are values
             targetFound = true; //Then target is found
             telemetry.addData("\n>","Target found\n"); //Hold down left bumper to activate code below
+
+            foundtag = id;
 
         } else { //If there aren't any values
             telemetry.addData("\n>","Drive using joysticks to find valid target\n"); //Then adjust to find values
@@ -196,25 +206,23 @@ public class VisionTesting extends OpMode
             //Lots of math stuff
             // Determine heading and range error so we can use them to control the robot automatically.
             double  rangeError   = (pose.range - DESIRED_DISTANCE);
-            double  headingError = pose.bearing;
-            double  yawError     = pose.yaw;
+            double  headingError = (pose.bearing - DESIRED_BEARING);
+            double  yawError     = (pose.yaw - DESIRED_YAW);
 
             // Use the speed and turn "gains" to calculate how we want the robot to move.  Clip it to the maximum
             forward = Range.clip(rangeError * SPEED_GAIN, -MAX_AUTO_SPEED, MAX_AUTO_SPEED);
             pivot  = Range.clip(headingError * TURN_GAIN, -MAX_AUTO_TURN, MAX_AUTO_TURN) ;
             strafe = Range.clip(-yawError * STRAFE_GAIN, -MAX_AUTO_STRAFE, MAX_AUTO_STRAFE);
 
-            telemetry.addData("Auto","Drive %5.2f, Turn %5.2f", drive, turn);
-        } else { //If left bumper not pressed and it doesn't find target then it will go back to normal driver controls but go slower
+            if (Math.abs(rangeError) <= 0.5 & Math.abs(headingError) <= 0.5 & Math.abs (yawError) <= 0.5)
+            {
+                foundtag = 0;
+            }
 
-            // drive using manual POV Joystick mode.
-            forward = -gamepad1.left_stick_y  / 2.0;  // Reduce drive rate to 50%.
-            strafe = -gamepad1.left_stick_x  / 2.0;  // Reduce strafe rate to 50%.
-            pivot  = -gamepad1.right_stick_x / 4.0;  // Reduce turn rate to 25%.
-            telemetry.addData("Manual","Drive %5.2f, Turn %5.2f", forward, pivot);
+            telemetry.addData("Auto","Drive %5.2f, Turn %5.2f", drive, turn);
         }
         telemetry.update();
 
-
+        return foundtag;
     }
   }
