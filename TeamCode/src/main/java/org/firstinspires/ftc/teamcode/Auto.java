@@ -50,7 +50,7 @@ public class Auto extends LinearOpMode {
 
     ElapsedTime runtime = new ElapsedTime();
     double delayTime = 0;
-    final double PAUSE_TIME = 5;
+    final double PAUSE_TIME = 2;
 
     @Override
     public void runOpMode()
@@ -67,7 +67,7 @@ public class Auto extends LinearOpMode {
         while (opModeIsActive())
         {
             //put in auto path of choice here
-            redInnerSidewaysLaunchClose();
+            redInnerForwardLaunchClose();
 
           
         telemetry.update();
