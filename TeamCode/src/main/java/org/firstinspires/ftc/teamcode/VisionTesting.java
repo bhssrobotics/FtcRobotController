@@ -120,7 +120,7 @@ public class VisionTesting extends OpMode
     */
     // @Override
     public void loop() {
-        telemetryAprilTag();
+        //telemetryAprilTag();
         if(drivingState==0)
         {
             if (gamepad1.bWasPressed()) //When the button on gamepad is pressed stuff below happens
@@ -191,12 +191,12 @@ public class VisionTesting extends OpMode
         int foundtag = 0;
         if (pose!=null) { //If there are values
             targetFound = true; //Then target is found
-            telemetry.addData("\n>","Target found\n"); //Hold down left bumper to activate code below
+            //telemetry.addData("\n>","Target found\n"); //Hold down left bumper to activate code below
 
             foundtag = id;
 
         } else { //If there aren't any values
-            telemetry.addData("\n>","Drive using joysticks to find valid target\n"); //Then adjust to find values
+            //telemetry.addData("\n>","Drive using joysticks to find valid target\n"); //Then adjust to find values
             targetFound = false;
         }
 
@@ -214,12 +214,13 @@ public class VisionTesting extends OpMode
             pivot  = Range.clip(headingError * TURN_GAIN, -MAX_AUTO_TURN, MAX_AUTO_TURN) ;
             strafe = Range.clip(-yawError * STRAFE_GAIN, -MAX_AUTO_STRAFE, MAX_AUTO_STRAFE);
 
-            if (Math.abs(rangeError) <= 0.5 & Math.abs(headingError) <= 0.5 & Math.abs (yawError) <= 0.5)
+            if (Math.abs(forward) <= 0.05 && Math.abs(pivot) <= 0.05 && Math.abs (strafe) <= 0.05)
             {
                 foundtag = 0;
             }
 
-            telemetry.addData("Auto","Drive %5.2f, Turn %5.2f", drive, turn);
+            telemetry.addData("Auto","Re %5.2f, He %5.2f, Ye %5.2f", rangeError, headingError, yawError);
+            telemetry.addData("Auto","F %5.2f, P %5.2f, S %5.2f", forward, pivot, strafe);
         }
         telemetry.update();
 
