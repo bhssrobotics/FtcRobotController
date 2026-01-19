@@ -108,27 +108,37 @@ public class SteeringControls extends OpMode
         public void launch()
         {
             //press the button to start the launcher code
-            if (gamepad2.right_bumper) //if i press the right bumper
+            if (gamepad2.b) //launch
             {
-                telemetry.addData("current state: ", robot.launcher.getState());
-                if(robot.launcher.readyToLaunch())
-                {
-                    //set to full power
-                    robot.launcher.warmingUp();
-                    delayTime = runtime.seconds() + PAUSE_TIME;
-                } //end of if ready to launch
+                if(robot.launcher.isWarmingUp())
+                    robot.launcher.launching();
             }//end of gamepad 2 right bumper
+            else if (gamepad2.right_bumper)
+            {
+                if(robot.launcher.readyToLaunch())
+                    robot.launcher.warmingUp();
+            }
             else if (gamepad2.left_bumper) //if i press the left bumper
             {
                 //turn off the launching motor
                 robot.launcher.notLaunching();
             }//end of gamepad 2 left bumper
 
-            if(robot.launcher.isWarmingUp() && runtime.seconds() >= delayTime)
+            if(gamepad2.y)
             {
-                robot.launcher.launching();
-            }//end of if is warming up
+                robot.launcher.turnOffAgitatorIntake(); //pressing y turns off the agitator and the intake
+            }
+            if(gamepad2.a)
+            {
+                robot.launcher.changeAgitatorDirection(); //pressing a makes the agitator rotate in the other direction (for getting balls unstuck)
+                robot.launcher.setAgitatorSpeed(1); //speed needs to be reset everytime due to state code
+            }
+
         } //end of launch
+
+
+
+
 
     } //end of steering controls
   
