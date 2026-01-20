@@ -14,7 +14,8 @@ public class BasicBot_Launcher
     private CRServo agitator = null;
     private DcMotor flywheel = null;
     private DcMotorEx shooterIntake = null;
-    private int state = 0; //0 - not launching; 1 - fly wheel is warming up; 2 - launching
+    private int state = 0; //0 - not launching; 1 - fly wheel is warming up; 2 - launching; 3 - turn off agitator and intake
+    private boolean isAgitatorForwards = true;
 
     public BasicBot_Launcher(HardwareMap hwMap)
     {
@@ -37,9 +38,16 @@ public class BasicBot_Launcher
 
 
     }
-    private void setAgitatorSpeed(double speed)
+    public void setAgitatorSpeed(double speed)
     {
-        agitator.setPower(speed);
+        if(isAgitatorForwards)
+        {
+            agitator.setPower(speed); //forwards
+        }
+        else
+        {
+            agitator.setPower(-speed); //backwards
+        }
     }
 
     private void setFlywheelSpeed(double speed)
@@ -52,6 +60,17 @@ public class BasicBot_Launcher
         shooterIntake.setPower(speed);
     }
 
+    void changeAgitatorDirection()
+    {
+        if(isAgitatorForwards) //change forwards to backwards and vice versa
+        {
+            isAgitatorForwards = false;
+        }
+        else
+        {
+            isAgitatorForwards = true;
+        }
+    }
     void notLaunching()
     {
         state = 0;
@@ -69,6 +88,14 @@ public class BasicBot_Launcher
            state = 2;
            setMotors();
        }
+    }
+    void turnOffAgitatorIntake()
+    {
+        if(state == 2)
+        {
+            state = 3;
+            setMotors();
+        }
     }
 
     void setMotors()
@@ -88,6 +115,16 @@ public class BasicBot_Launcher
             setAgitatorSpeed(1);
             setShooterIntakeSpeed(0.5);
         }
+        else if(state == 3)
+        {
+            setAgitatorSpeed(0);
+            setShooterIntakeSpeed(0);
+        }
+    }
+
+    void getAgitatorSpeed()
+    {
+
     }
 
     boolean readyToLaunch()
