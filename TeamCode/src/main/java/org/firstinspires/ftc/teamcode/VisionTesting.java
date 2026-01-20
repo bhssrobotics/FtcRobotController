@@ -57,7 +57,7 @@ import org.firstinspires.ftc.vision.apriltag.AprilTagDetection;
 * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
 */
 
-@TeleOp(name="Steering Controls", group="Pushbot")
+@TeleOp(name="Steering With Vision", group="Pushbot")
 public class VisionTesting extends OpMode
 {
     /* Declare OpMode members. */
@@ -75,8 +75,9 @@ public class VisionTesting extends OpMode
     final double MAX_AUTO_STRAFE= 0.5;   //  Clip the strafing speed to this max value (adjust for your robot)
     double  drive           = 0;        // Desired forward power/speed (-1 to +1) +ve is forward
     double  turn            = 0;        // Desired turning power/speed (-1 to +1) +ve is CounterClockwise
-    ElapsedTime runtime = new ElapsedTime();
-    double delayTime = 0;
+    //ElapsedTime runtime = new ElapsedTime();
+    //double delayTime = 0;
+
     final double PAUSE_TIME = 10;
 
     int drivingState= 0; //0 is normal driving, 1 is launching
@@ -91,7 +92,7 @@ public class VisionTesting extends OpMode
     * Code to run ONCE when the driver hits INIT
     */
     //@Override
-    public void init() 
+    public void init()
     {
         /* Initialize the hardware variables.
         * The init() method of the hardware class does all the work here
@@ -103,7 +104,7 @@ public class VisionTesting extends OpMode
     * Code to run REPEATEDLY after the driver hits INIT, but before they hit PLAY
     */
     //@Override
-    public void init_loop() 
+    public void init_loop()
     {
     }
 
@@ -111,7 +112,7 @@ public class VisionTesting extends OpMode
     * Code to run ONCE when the driver hits PLAY
     */
     //@Override
-    public void start() 
+    public void start()
     {
     }
 
@@ -121,20 +122,40 @@ public class VisionTesting extends OpMode
     // @Override
     public void loop() {
         //telemetryAprilTag();
-        if(drivingState==0)
-        {
+
             if (gamepad1.bWasPressed()) //When the button on gamepad is pressed stuff below happens
             {
                 telemetry.addData("\n>", "b was pressed");
                 drivingState = aprilTagAlignment(24); //Going to this method (code below)v
-                delayTime= runtime.seconds() + PAUSE_TIME;
-                // which equals pivot from our values
+                //delayTime= runtime.seconds() + PAUSE_TIME;
+
+                    robot.driveTrain.moveRobot(forward, pivot, strafe);
+                telemetry.addData("\n>", "moveRobot was called");
+
+        //            if(runtime.seconds() >= delayTime)
+        //            {
+        //                drivingState = 0;
+        //            }
+
+                telemetry.addData("Driving","Forward %5.2f, Strafe %5.2f, Pivot %5.2f", forward, strafe, pivot);
+                telemetry.update();
+                // which equals pivot from our val ues
             } else if (gamepad1.xWasPressed()) //When the button on gamepad is pressed stuff below happens
             {
                 telemetry.addData("\n>", "x was pressed");
-                drivingState = aprilTagAlignment(25); //Going to this method (code below)
-                delayTime= runtime.seconds() + PAUSE_TIME;
+                drivingState = aprilTagAlignment(20); //Going to this method (code below)
+                //delayTime= runtime.seconds() + PAUSE_TIME;
 
+                    robot.driveTrain.moveRobot(forward, pivot, strafe);
+                telemetry.addData("\n>", "moveRobot was called");
+                    //            if(runtime.seconds() >= delayTime)
+                    //            {
+                    //                drivingState = 0;
+                    //            }
+
+
+                telemetry.addData("Driving","Forward %5.2f, Strafe %5.2f, Pivot %5.2f", forward, strafe, pivot);
+                telemetry.update();
             } else //If button not pressed, controls on gamepad work normally
             {
                 forward = -gamepad1.left_stick_y; //Moving left and right
@@ -142,20 +163,11 @@ public class VisionTesting extends OpMode
                 pivot = gamepad1.right_stick_x; //backwards and forwards
                 robot.driveTrain.drive(forward, strafe, pivot);
             }
-        }
-        else
-        {
-            robot.driveTrain.moveRobot(forward, strafe, pivot);
-//            if(runtime.seconds() >= delayTime)
-//            {
-//                drivingState = 0;
-//            }
-            drivingState = aprilTagAlignment(drivingState); //Going to this method (code below)
-        }
 
-        //telemetry.addData("Driving","Forward %5.2f, Strafe %5.2f, Pivot %5.2f", forward, strafe, pivot);
-        //telemetry.update();
+
     }
+
+        //
 
     private void telemetryAprilTag() { //Telemetry sends data to the driver hub and displays text on the screen
         List<AprilTagDetection> currentDetections = robot.visionControl.getCurrentDetections();
@@ -214,10 +226,6 @@ public class VisionTesting extends OpMode
             pivot  = Range.clip(headingError * TURN_GAIN, -MAX_AUTO_TURN, MAX_AUTO_TURN) ;
             strafe = Range.clip(-yawError * STRAFE_GAIN, -MAX_AUTO_STRAFE, MAX_AUTO_STRAFE);
 
-            if (Math.abs(forward) <= 0.05 && Math.abs(pivot) <= 0.05 && Math.abs (strafe) <= 0.05)
-            {
-                foundtag = 0;
-            }
 
             telemetry.addData("Auto","Re %5.2f, He %5.2f, Ye %5.2f", rangeError, headingError, yawError);
             telemetry.addData("Auto","F %5.2f, P %5.2f, S %5.2f", forward, pivot, strafe);
@@ -226,4 +234,6 @@ public class VisionTesting extends OpMode
 
         return foundtag;
     }
-  }
+    }
+
+
