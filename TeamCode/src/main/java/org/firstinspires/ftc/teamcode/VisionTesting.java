@@ -65,8 +65,8 @@ public class VisionTesting extends OpMode
     boolean targetFound     = false;    // Set to true when an AprilTag target is detected
     AprilTagPoseFtc pose;
     final float DESIRED_DISTANCE = 112;
-    final float DESIRED_YAW = -9;
-    final double DESIRED_BEARING = 10.7;
+    final double DESIRED_YAW = -6.5;
+    final double DESIRED_BEARING = 9;
     final double SPEED_GAIN =   0.02 ;   //  Speed Control "Gain". e.g. Ramp up to 50% power at a 25 inch error.   (0.50 / 25.0)
     final double TURN_GAIN  =   0.01 ;   //  Turn Control "Gain".  e.g. Ramp up to 25% power at a 25 degree error. (0.25 / 25.0)
     final double STRAFE_GAIN =  0.015 ;   //  Strafe Speed Control "Gain".  e.g. Ramp up to 37% power at a 25 degree Yaw error.   (0.375 / 25.0)
@@ -75,8 +75,8 @@ public class VisionTesting extends OpMode
     final double MAX_AUTO_STRAFE= 0.5;   //  Clip the strafing speed to this max value (adjust for your robot)
     double  drive           = 0;        // Desired forward power/speed (-1 to +1) +ve is forward
     double  turn            = 0;        // Desired turning power/speed (-1 to +1) +ve is CounterClockwise
-    //ElapsedTime runtime = new ElapsedTime();
-    //double delayTime = 0;
+    ElapsedTime runtime = new ElapsedTime();
+    double delayTime = 0;
 
     final double PAUSE_TIME = 10;
 
@@ -121,48 +121,55 @@ public class VisionTesting extends OpMode
     */
     // @Override
     public void loop() {
-        //telemetryAprilTag();
+        telemetryAprilTag();
+        if(drivingState == 0)
+        {
+        if (gamepad1.bWasPressed()) //When the button on gamepad is pressed stuff below happens
+        {
+            telemetry.addData("\n>", "b was pressed");
+            drivingState = aprilTagAlignment(24); //Going to this method (code below)v
+            delayTime= runtime.seconds() + PAUSE_TIME;
 
-            if (gamepad1.bWasPressed()) //When the button on gamepad is pressed stuff below happens
-            {
-                telemetry.addData("\n>", "b was pressed");
-                drivingState = aprilTagAlignment(24); //Going to this method (code below)v
-                //delayTime= runtime.seconds() + PAUSE_TIME;
+            //robot.driveTrain.moveRobot(forward, pivot, strafe);
+            //telemetry.addData("\n>", "moveRobot was called");
 
-                    robot.driveTrain.moveRobot(forward, pivot, strafe);
-                telemetry.addData("\n>", "moveRobot was called");
+            //            if(runtime.seconds() >= delayTime)
+            //            {
+            //                drivingState = 0;
+            //            }
 
-        //            if(runtime.seconds() >= delayTime)
-        //            {
-        //                drivingState = 0;
-        //            }
+            telemetry.addData("Driving", "Forward %5.2f, Strafe %5.2f, Pivot %5.2f", forward, strafe, pivot);
+            telemetry.update();
+            // which equals pivot from our val ues
+        } else if (gamepad1.xWasPressed()) //When the button on gamepad is pressed stuff below happens
+        {
+            telemetry.addData("\n>", "x was pressed");
+            drivingState = aprilTagAlignment(20); //Going to this method (code below)
+            //delayTime= runtime.seconds() + PAUSE_TIME;
 
-                telemetry.addData("Driving","Forward %5.2f, Strafe %5.2f, Pivot %5.2f", forward, strafe, pivot);
-                telemetry.update();
-                // which equals pivot from our val ues
-            } else if (gamepad1.xWasPressed()) //When the button on gamepad is pressed stuff below happens
-            {
-                telemetry.addData("\n>", "x was pressed");
-                drivingState = aprilTagAlignment(20); //Going to this method (code below)
-                //delayTime= runtime.seconds() + PAUSE_TIME;
-
-                    robot.driveTrain.moveRobot(forward, pivot, strafe);
-                telemetry.addData("\n>", "moveRobot was called");
-                    //            if(runtime.seconds() >= delayTime)
-                    //            {
-                    //                drivingState = 0;
-                    //            }
+            robot.driveTrain.drive(forward, strafe, pivot);
+            telemetry.addData("\n>", "moveRobot was called");
+            //            if(runtime.seconds() >= delayTime)
+            //            {
+            //                drivingState = 0;
+            //            }
 
 
-                telemetry.addData("Driving","Forward %5.2f, Strafe %5.2f, Pivot %5.2f", forward, strafe, pivot);
-                telemetry.update();
-            } else //If button not pressed, controls on gamepad work normally
-            {
-                forward = -gamepad1.left_stick_y; //Moving left and right
-                strafe = gamepad1.left_stick_x; // Moving side to side
-                pivot = gamepad1.right_stick_x; //backwards and forwards
-                robot.driveTrain.drive(forward, strafe, pivot);
-            }
+
+        } else //If button not pressed, controls on gamepad work normally
+        {
+            forward = -gamepad1.left_stick_y; //Moving left and right
+            strafe = gamepad1.left_stick_x; // Moving side to side
+            pivot = gamepad1.right_stick_x; //backwards and forwards
+            robot.driveTrain.drive(forward, strafe, pivot);
+        }
+    }
+        else {
+            robot.driveTrain.drive(forward, strafe, pivot);
+            drivingState = aprilTagAlignment(drivingState);
+            telemetry.addData("Driving", "Forward %5.2f, Strafe %5.2f, Pivot %5.2f", forward, strafe, pivot);
+            telemetry.update();
+        }
 
 
     }
@@ -224,7 +231,7 @@ public class VisionTesting extends OpMode
             // Use the speed and turn "gains" to calculate how we want the robot to move.  Clip it to the maximum
             forward = Range.clip(rangeError * SPEED_GAIN, -MAX_AUTO_SPEED, MAX_AUTO_SPEED);
             pivot  = Range.clip(headingError * TURN_GAIN, -MAX_AUTO_TURN, MAX_AUTO_TURN) ;
-            strafe = Range.clip(-yawError * STRAFE_GAIN, -MAX_AUTO_STRAFE, MAX_AUTO_STRAFE);
+            strafe = Range.clip(yawError * STRAFE_GAIN, -MAX_AUTO_STRAFE, MAX_AUTO_STRAFE);
 
 
             telemetry.addData("Auto","Re %5.2f, He %5.2f, Ye %5.2f", rangeError, headingError, yawError);
