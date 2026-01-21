@@ -68,10 +68,10 @@ public class VisionTesting extends OpMode
     final double DESIRED_YAW = -6.5;
     final double DESIRED_BEARING = 9;
     final double SPEED_GAIN =   0.02 ;   //  Speed Control "Gain". e.g. Ramp up to 50% power at a 25 inch error.   (0.50 / 25.0)
-    final double TURN_GAIN  =   0.02 ;   //  Turn Control "Gain".  e.g. Ramp up to 25% power at a 25 degree error. (0.50 / 25.0)
+    final double TURN_GAIN  =   0.04 ;   //  Turn Control "Gain".  e.g. Ramp up to 25% power at a 25 degree error. (0.50 / 25.0)
     final double STRAFE_GAIN =  0.015 ;   //  Strafe Speed Control "Gain".  e.g. Ramp up to 37% power at a 25 degree Yaw error.   (0.375 / 25.0)
     final double MAX_AUTO_SPEED = 0.5;   //  Clip the approach speed to this max value (adjust for your robot)
-    final double MAX_AUTO_TURN  = 0.25;  //  Clip the turn speed to this max value (adjust for your robot)
+    final double MAX_AUTO_TURN  = 0.15;  //  Clip the turn speed to this max value (adjust for your robot)
     final double MAX_AUTO_STRAFE= 0.5;   //  Clip the strafing speed to this max value (adjust for your robot)
     double  drive           = 0;        // Desired forward power/speed (-1 to +1) +ve is forward
     double  turn            = 0;        // Desired turning power/speed (-1 to +1) +ve is CounterClockwise
@@ -209,10 +209,16 @@ public class VisionTesting extends OpMode
             launch();
         }
         else {
-            robot.driveTrain.drive(0, 0, -pivot);
-            drivingState = fixPivot(drivingState);
-            //telemetry.addData("Driving", "Forward %5.2f, Strafe %5.2f, Pivot %5.2f", forward, strafe, pivot);
-            //telemetry.update();
+            if(gamepad1.right_bumper)
+            {
+                drivingState = 0;
+            }
+            else {
+                robot.driveTrain.drive(0, 0, -pivot);
+                drivingState = fixPivot(drivingState);
+                //telemetry.addData("Driving", "Forward %5.2f, Strafe %5.2f, Pivot %5.2f", forward, strafe, pivot);
+                //telemetry.update();
+            }
         }
     }
 
@@ -258,6 +264,7 @@ public class VisionTesting extends OpMode
             //telemetry.addData("\n>","Drive using joysticks to find valid target\n"); //Then adjust to find values
             targetFound = false;
             //robot.visionControl.stopStreaming();
+            telemetry.addData("\n>", "target not found %d", foundtag);
         }
 
         // If Left Bumper is being pressed, AND we have found the desired target, Drive to target Automatically .
@@ -277,7 +284,8 @@ public class VisionTesting extends OpMode
            //off by ~4.5/5.
 
             //CHANGE THIS
-            if (Math.abs(headingError) <= 0.1) {
+            if (Math.abs(headingError) <= 1.5) {
+                telemetry.addData("\n>", "heading error less than 1.5");
                 foundtag = 0;
                 //robot.visionControl.stopStreaming();
             }

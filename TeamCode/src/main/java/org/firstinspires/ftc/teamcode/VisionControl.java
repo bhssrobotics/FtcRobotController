@@ -39,6 +39,7 @@ public class VisionControl
         if (USE_WEBCAM) {
             visionPortal = VisionPortal.easyCreateWithDefaults(
                     hwMap.get(WebcamName.class, "Webcam 1"), aprilTag);
+
         } else {
             visionPortal = VisionPortal.easyCreateWithDefaults(
                     BuiltinCameraDirection.BACK, aprilTag);
