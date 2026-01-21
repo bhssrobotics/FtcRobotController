@@ -68,7 +68,7 @@ public class VisionTesting extends OpMode
     final double DESIRED_YAW = -6.5;
     final double DESIRED_BEARING = 9;
     final double SPEED_GAIN =   0.02 ;   //  Speed Control "Gain". e.g. Ramp up to 50% power at a 25 inch error.   (0.50 / 25.0)
-    final double TURN_GAIN  =   0.01 ;   //  Turn Control "Gain".  e.g. Ramp up to 25% power at a 25 degree error. (0.25 / 25.0)
+    final double TURN_GAIN  =   0.02 ;   //  Turn Control "Gain".  e.g. Ramp up to 25% power at a 25 degree error. (0.50 / 25.0)
     final double STRAFE_GAIN =  0.015 ;   //  Strafe Speed Control "Gain".  e.g. Ramp up to 37% power at a 25 degree Yaw error.   (0.375 / 25.0)
     final double MAX_AUTO_SPEED = 0.5;   //  Clip the approach speed to this max value (adjust for your robot)
     final double MAX_AUTO_TURN  = 0.25;  //  Clip the turn speed to this max value (adjust for your robot)
@@ -170,7 +170,7 @@ public class VisionTesting extends OpMode
             if (gamepad1.bWasPressed()) //When the button on gamepad is pressed stuff below happens
             {
                 robot.visionControl.resumeStreaming();
-                telemetry.addData("\n>", "b was pressed");
+                //telemetry.addData("\n>", "b was pressed");
                 drivingState = fixPivot(24); //Going to this method (code below)v
                 //delayTime= runtime.seconds() + PAUSE_TIME;
 
@@ -182,38 +182,37 @@ public class VisionTesting extends OpMode
                 //                drivingState = 0;
                 //            }
 
-                telemetry.addData("Driving", "Forward %5.2f, Strafe %5.2f, Pivot %5.2f", forward, strafe, pivot);
-                telemetry.update();
+                //telemetry.addData("Driving", "Forward %5.2f, Strafe %5.2f, Pivot %5.2f", forward, strafe, pivot);
+                //telemetry.update();
                 // which equals pivot from our val ues
             } else if (gamepad1.xWasPressed()) //When the button on gamepad is pressed stuff below happens
             {
                 robot.visionControl.resumeStreaming();
-                telemetry.addData("\n>", "x was pressed");
+                //telemetry.addData("\n>", "x was pressed");
                 drivingState = fixPivot(20); //Going to this method (code below)
                 //delayTime= runtime.seconds() + PAUSE_TIME;
 
                 robot.driveTrain.drive(forward, strafe, pivot);
-                telemetry.addData("\n>", "moveRobot was called");
-                //            if(runtime.seconds() >= delayTime)
-                //            {
-                //                drivingState = 0;
-                //            }
+
 
 
 
             } else //If button not pressed, controls on gamepad work normally
             {
-                forward = -gamepad1.left_stick_y; //Moving left and right
-                strafe = gamepad1.left_stick_x; // Moving side to side
-                pivot = gamepad1.right_stick_x; //backwards and forwards
-                robot.driveTrain.drive(forward, strafe, pivot);
+                double forward = -gamepad1.left_stick_y; //strafing left and right
+                double strafe = -gamepad1.left_stick_x; //
+                double turn = gamepad1.right_stick_x; //backwards and forwards
+
+                robot.driveTrain.drive(forward, strafe, turn);
             }
+
+            launch();
         }
         else {
             robot.driveTrain.drive(0, 0, -pivot);
             drivingState = fixPivot(drivingState);
-            telemetry.addData("Driving", "Forward %5.2f, Strafe %5.2f, Pivot %5.2f", forward, strafe, pivot);
-            telemetry.update();
+            //telemetry.addData("Driving", "Forward %5.2f, Strafe %5.2f, Pivot %5.2f", forward, strafe, pivot);
+            //telemetry.update();
         }
     }
 
@@ -275,17 +274,19 @@ public class VisionTesting extends OpMode
             pivot  = Range.clip(headingError * TURN_GAIN, -MAX_AUTO_TURN, MAX_AUTO_TURN) ;
             //strafe = Range.clip(yawError * STRAFE_GAIN, -MAX_AUTO_STRAFE, MAX_AUTO_STRAFE);
 
-            //needed for non-continuous (driving state)
+           //off by ~4.5/5.
 
-            if (Math.abs(pivot) <= 0.1) {
+            //CHANGE THIS
+            if (Math.abs(headingError) <= 0.1) {
                 foundtag = 0;
                 //robot.visionControl.stopStreaming();
             }
 
             //telemetry.addData("Auto","Re %5.2f, He %5.2f, Ye %5.2f", rangeError, headingError, yawError);
-            telemetry.addData("Auto","F %5.2f, P %5.2f, S %5.2f", forward, pivot, strafe);
+            telemetry.addData("Auto","Pose bearing %5.2f, Heading error %5.2f, Pivot %5.2f", pose.bearing, headingError, pivot);
+            telemetry.update();
         }
-        telemetry.update();
+
 
         return foundtag;
     }
@@ -329,6 +330,37 @@ public class VisionTesting extends OpMode
 
         return foundtag;
     }
+
+    public void launch()
+    {
+        //press the button to start the launcher code
+        if (gamepad2.b) //launch
+        {
+            if(robot.launcher.isWarmingUp())
+                robot.launcher.launching();
+        }//end of gamepad 2 right bumper
+        else if (gamepad2.right_bumper)
+        {
+            if(robot.launcher.readyToLaunch())
+                robot.launcher.warmingUp();
+        }
+        else if (gamepad2.left_bumper) //if i press the left bumper
+        {
+            //turn off the launching motor
+            robot.launcher.notLaunching();
+        }//end of gamepad 2 left bumper
+
+        if(gamepad2.y)
+        {
+            robot.launcher.turnOffAgitatorIntake(); //pressing y turns off the agitator and the intake
+        }
+        if(gamepad2.a)
+        {
+            robot.launcher.changeAgitatorDirection(); //pressing a makes the agitator rotate in the other direction (for getting balls unstuck)
+            robot.launcher.setAgitatorSpeed(1); //speed needs to be reset everytime due to state code
+        }
+
+    } //end of launch
     }
 
 
