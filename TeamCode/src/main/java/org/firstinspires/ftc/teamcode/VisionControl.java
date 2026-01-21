@@ -44,6 +44,8 @@ public class VisionControl
                     BuiltinCameraDirection.BACK, aprilTag);
         }
 
+        //visionPortal.stopStreaming();
+
     }   // end method initAprilTag(                                                                                                            )
 
     // accessor to stop streaming
