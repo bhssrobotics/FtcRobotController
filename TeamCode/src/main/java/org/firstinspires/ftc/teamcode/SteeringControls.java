@@ -134,6 +134,15 @@ public class SteeringControls extends OpMode
                 robot.launcher.setAgitatorSpeed(1); //speed needs to be reset everytime due to state code
             }
 
+            if(gamepad2.dpad_down)
+            {
+                robot.launcher.launchShort();
+            }
+            if(gamepad2.dpad_up)
+            {
+                robot.launcher.launchLong();
+            }
+
         } //end of launch
 
 
