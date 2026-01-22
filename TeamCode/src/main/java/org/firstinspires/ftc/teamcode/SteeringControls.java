@@ -32,6 +32,8 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.util.ElapsedTime;
+import org.firstinspires.ftc.vision.apriltag.AprilTagDetection;
+import org.firstinspires.ftc.vision.apriltag.AprilTagPoseFtc;
 
 /**
 * This file provides basic Telop driving for a Pushbot robot.
@@ -54,6 +56,10 @@ public class SteeringControls extends OpMode
     /* Declare OpMode members. */
     HardwarePushbot robot       = new HardwarePushbot(); // use the class created to define a Pushbot's hardware
     double speed=0;
+
+    final double DESIRED_BEARING = 9;
+    final double MAX_AUTO_TURN  = 0.15;  //  Clip the turn speed to this max value (adjust for your robot)
+    int drivingState = 0;
 
     ElapsedTime runtime = new ElapsedTime();
     double delayTime = 0;
@@ -159,6 +165,9 @@ public class SteeringControls extends OpMode
 
     private int calculatePivot(int id){ //This is the method called above to calculate where robot needs to go based on desired distance
         // Tell the driver what we see, and what to do.
+        boolean targetFound     = false;    // Set to true when an AprilTag target is detected
+        AprilTagPoseFtc pose;
+
         pose = robot.visionControl.getDetectionsVal(id); //Getting values from VisionControl class of the April Tag ID
         double arcLength = 0;
         int foundtag = 0;
