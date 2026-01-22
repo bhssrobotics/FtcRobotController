@@ -78,7 +78,7 @@ public class VisionTesting extends OpMode
     ElapsedTime runtime = new ElapsedTime();
     double delayTime = 0;
 
-    final double PAUSE_TIME = 10;
+    final double PAUSE_TIME = 5;
 
     int drivingState= 0; //0 is normal driving, 1 is launching
 
@@ -98,6 +98,7 @@ public class VisionTesting extends OpMode
         * The init() method of the hardware class does all the work here
         */
         robot.init(hardwareMap);
+        runtime.reset();
     }
 
     /*
@@ -121,7 +122,39 @@ public class VisionTesting extends OpMode
     */
     // @Override
     public void loop() {
-        driveTestDrivingState();
+        driveTestPivotCalc();
+
+    }
+
+
+    private void driveTestPivotCalc()
+    {
+        //telemetryAprilTag();
+ //       if(drivingState == 0)
+//        {
+            if (gamepad1.bWasPressed()) //When the button on gamepad is pressed stuff below happens
+            {
+                robot.visionControl.resumeStreaming();
+                //telemetry.addData("\n>", "b was pressed");
+                drivingState = calculatePivot(24); //Going to this method (code below)v
+                delayTime = runtime.seconds() + PAUSE_TIME;
+
+            } else if (gamepad1.xWasPressed()) //When the button on gamepad is pressed stuff below happens
+            {
+                robot.visionControl.resumeStreaming();
+                //telemetry.addData("\n>", "b was pressed");
+                drivingState = calculatePivot(20); //Going to this method (code below)v
+            } else //If button not pressed, controls on gamepad work normally
+            {
+                double forward = -gamepad1.left_stick_y; //strafing left and right
+                double strafe = -gamepad1.left_stick_x; //
+                double turn = gamepad1.right_stick_x; //backwards and forwards
+
+                robot.driveTrain.drive(forward, strafe, turn);
+            }
+
+            launch();
+      //  }
 
     }
 
@@ -169,7 +202,6 @@ public class VisionTesting extends OpMode
         {
             if (gamepad1.bWasPressed()) //When the button on gamepad is pressed stuff below happens
             {
-                robot.visionControl.resumeStreaming();
                 //telemetry.addData("\n>", "b was pressed");
                 drivingState = fixPivot(24); //Going to this method (code below)v
                 //delayTime= runtime.seconds() + PAUSE_TIME;
@@ -187,12 +219,9 @@ public class VisionTesting extends OpMode
                 // which equals pivot from our val ues
             } else if (gamepad1.xWasPressed()) //When the button on gamepad is pressed stuff below happens
             {
-                robot.visionControl.resumeStreaming();
                 //telemetry.addData("\n>", "x was pressed");
                 drivingState = fixPivot(20); //Going to this method (code below)
                 //delayTime= runtime.seconds() + PAUSE_TIME;
-
-                robot.driveTrain.drive(forward, strafe, pivot);
 
 
 
@@ -246,7 +275,7 @@ public class VisionTesting extends OpMode
         telemetry.addLine("PRY = Pitch, Roll & Yaw (XYZ Rotation)");
         telemetry.addLine("RBE = Range, Bearing & Elevation");
 
-        telemetry.update();
+        //telemetry.update();
 
     }   // end method telemetryAprilTag()
 
@@ -298,6 +327,60 @@ public class VisionTesting extends OpMode
 
         return foundtag;
     }
+
+    private int calculatePivot(int id){ //This is the method called above to calculate where robot needs to go based on desired distance
+        // Tell the driver what we see, and what to do.
+        pose = robot.visionControl.getDetectionsVal(id); //Getting values from VisionControl class of the April Tag ID
+        double arcLength = 0;
+        int foundtag = 0;
+        if (pose!=null) { //If there are values
+            targetFound = true; //Then target is found
+            //telemetry.addData("\n>","Target found\n"); //Hold down left bumper to activate code below
+            arcLength = 0;
+            foundtag = id;
+
+        } else { //If there aren't any values
+            //telemetry.addData("\n>","Drive using joysticks to find valid target\n"); //Then adjust to find values
+            targetFound = false;
+            //robot.visionControl.stopStreaming();
+            telemetry.addData("\n>", "target not found %d", id);
+            foundtag = 0;
+        }
+
+        // If Left Bumper is being pressed, AND we have found the desired target, Drive to target Automatically .
+        if (targetFound) {
+
+            //Lots of math stuff
+            // Determine heading and range error so we can use them to control the robot automatically.
+            //double  rangeError   = (pose.range - DESIRED_DISTANCE);
+            double  headingError = (pose.bearing - DESIRED_BEARING);
+            //double  yawError     = (pose.yaw - DESIRED_YAW);
+            String direction = "";
+
+            arcLength = 2 * Math.PI * 15 * (Math.abs(headingError) / 360);
+            if(headingError > 0)
+                robot.driveTrain.encoderDrive(true, MAX_AUTO_TURN, arcLength, PAUSE_TIME, "TURNLEFT");
+            else if(headingError < 0)
+                robot.driveTrain.encoderDrive(true, MAX_AUTO_TURN, arcLength, PAUSE_TIME, "TURNRIGHT");
+
+            // Use the speed and turn "gains" to calculate how we want the robot to move.  Clip it to the maximum
+            //forward = Range.clip(rangeError * SPEED_GAIN, -MAX_AUTO_SPEED, MAX_AUTO_SPEED);
+            //pivot  = Range.clip(headingError * TURN_GAIN, -MAX_AUTO_TURN, MAX_AUTO_TURN) ;
+            //strafe = Range.clip(yawError * STRAFE_GAIN, -MAX_AUTO_STRAFE, MAX_AUTO_STRAFE);
+
+
+
+
+
+            //telemetry.addData("Auto","Re %5.2f, He %5.2f, Ye %5.2f", rangeError, headingError, yawError);
+            telemetry.addData("Auto","Pose bearing %5.2f, Heading error %5.2f, arcLength %5.2f, delayTime %5.2f", pose.bearing, headingError, arcLength, delayTime);
+            telemetry.update();
+        }
+
+
+        return foundtag;
+    }
+
 
 
     private int aprilTagAlignment(int id){ //This is the method called above to calculate where robot needs to go based on desired distance

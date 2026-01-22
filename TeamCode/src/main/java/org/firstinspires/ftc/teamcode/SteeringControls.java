@@ -96,7 +96,7 @@ public class SteeringControls extends OpMode
         launch();
     } //end of loop
 
-        public void drive()
+        public void joystickDrive()
         {
             double forward = -gamepad1.left_stick_y; //strafing left and right
             double strafe = -gamepad1.left_stick_x; //
