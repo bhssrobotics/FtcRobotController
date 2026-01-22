@@ -9,19 +9,18 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 
-public class BasicBot_Launcher
-{
+public class BasicBot_Launcher {
     private CRServo agitator = null;
     private DcMotor flywheel = null;
     private DcMotorEx shooterIntake = null;
     private int state = 0; //0 - not launching; 1 - fly wheel is warming up; 2 - launching; 3 - turn off agitator and intake
     private boolean isAgitatorForwards = true;
+    private boolean launchingShort = false;
 
-    public BasicBot_Launcher(HardwareMap hwMap)
-    {
-        agitator  = hwMap.get(CRServo.class, "agitator");
-        flywheel  = hwMap.get(DcMotor.class, "flywheel");
-        shooterIntake  = hwMap.get(DcMotorEx.class, "shooterIntake");
+    public BasicBot_Launcher(HardwareMap hwMap) {
+        agitator = hwMap.get(CRServo.class, "agitator");
+        flywheel = hwMap.get(DcMotor.class, "flywheel");
+        shooterIntake = hwMap.get(DcMotorEx.class, "shooterIntake");
 
         flywheel.setDirection(DcMotor.Direction.REVERSE);
         flywheel.setPower(0);
@@ -33,8 +32,6 @@ public class BasicBot_Launcher
         shooterIntake.setDirection(DcMotor.Direction.REVERSE);
         shooterIntake.setPower(0);
         shooterIntake.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-
-
 
 
     }
@@ -50,13 +47,11 @@ public class BasicBot_Launcher
         }
     }
 
-    private void setFlywheelSpeed(double speed)
-    {
+    private void setFlywheelSpeed(double speed) {
         flywheel.setPower(speed);
     }
 
-    private void setShooterIntakeSpeed(double speed)
-    {
+    private void setShooterIntakeSpeed(double speed) {
         shooterIntake.setPower(speed);
     }
 
@@ -76,18 +71,24 @@ public class BasicBot_Launcher
         state = 0;
         setMotors();
     }
-    void warmingUp()
-    {
+
+    void warmingUp() {
         state = 1;
         setMotors();
     }
-    void launching()
-    {
-       if(state == 1)
-       {
-           state = 2;
-           setMotors();
-       }
+
+    void launching() {
+        if (state == 1) {
+            state = 2;
+            setMotors();
+        }
+    }
+
+    void turnOffAgitatorIntake() {
+        if (state == 2) {
+            state = 1;
+            setMotors();
+        }
     }
     void turnOffAgitatorIntake()
     {
@@ -98,46 +99,54 @@ public class BasicBot_Launcher
         }
     }
 
-    void setMotors()
+    void launchShort()
     {
-        if(state == 0)
+        launchingShort = true;
+    }
+    void launchLong()
+    {
+        launchingShort = false;
+    }
+
+        void setMotors()
         {
-            setAgitatorSpeed(0);
-            setFlywheelSpeed(0);
-            setShooterIntakeSpeed(0);
+            if (state == 0) {
+                setAgitatorSpeed(0);
+                setFlywheelSpeed(0);
+                setShooterIntakeSpeed(0);
+            } else if (state == 1) {
+                setAgitatorSpeed(0);
+                setShooterIntakeSpeed(0);
+
+                if (launchingShort) //if launching short, set flyWheel to slower speed (.6) in order to launch shorter
+                {
+                    setFlywheelSpeed(0.60);
+                } else {
+                    setFlywheelSpeed(0.75); //if launching long (as per usual), set flyWheel to regular speed (.75)
+                }
+            } else if (state == 2) {
+                setAgitatorSpeed(1);
+                setShooterIntakeSpeed(0.5);
+            }
         }
-        else if(state == 1)
+
+        void getAgitatorSpeed ()
         {
-            setFlywheelSpeed(0.75);
+
         }
-        else if(state == 2)
+
+        boolean readyToLaunch ()
         {
-            setAgitatorSpeed(1);
-            setShooterIntakeSpeed(0.5);
+            return state == 0;
         }
-        else if(state == 3)
+        boolean isWarmingUp ()
         {
-            setAgitatorSpeed(0);
-            setShooterIntakeSpeed(0);
+            return state == 1;
+        }
+
+        int getState ()
+        {
+            return state;
         }
     }
 
-    void getAgitatorSpeed()
-    {
-
-    }
-
-    boolean readyToLaunch()
-    {
-        return state == 0;
-    }
-    boolean isWarmingUp()
-    {
-        return state == 1;
-    }
-
-    int getState()
-    {
-        return state;
-    }
-}

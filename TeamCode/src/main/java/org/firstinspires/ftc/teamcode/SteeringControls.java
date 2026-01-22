@@ -152,18 +152,26 @@ public class SteeringControls extends OpMode
 
         if(gamepad2.y)
         {
-            robot.launcher.turnOffAgitatorIntake(); //pressing y turns off the agitator and the intake
-        }
-        if(gamepad2.a)
-        {
-            robot.launcher.changeAgitatorDirection(); //pressing a makes the agitator rotate in the other direction (for getting balls unstuck)
-            robot.launcher.setAgitatorSpeed(1); //speed needs to be reset everytime due to state code
-        }
+                robot.launcher.turnOffAgitatorIntake(); //pressing y turns off the agitator and the intake
+            }
+            if(gamepad2.a)
+            {
+                robot.launcher.changeAgitatorDirection(); //pressing a makes the agitator rotate in the other direction (for getting balls unstuck)
+                robot.launcher.setAgitatorSpeed(1); //speed needs to be reset everytime due to state code
+            }
 
-    } //end of launch
+            if(gamepad2.dpad_down)
+            {
+                robot.launcher.launchShort();
+            }
+            if(gamepad2.dpad_up)
+            {
+                robot.launcher.launchLong();
+            }
 
-
-    private int calculatePivot(int id){ //This is the method called above to calculate where robot needs to go based on desired distance
+        } //end of launch
+            
+            private int calculatePivot(int id){ //This is the method called above to calculate where robot needs to go based on desired distance
         // Tell the driver what we see, and what to do.
         boolean targetFound     = false;    // Set to true when an AprilTag target is detected
         AprilTagPoseFtc pose;
@@ -208,6 +216,10 @@ public class SteeringControls extends OpMode
 
         return foundtag;
     }
+
+           
+
+
 
 
 } //end of steering controls
