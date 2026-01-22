@@ -32,6 +32,8 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.util.ElapsedTime;
+import org.firstinspires.ftc.vision.apriltag.AprilTagDetection;
+import org.firstinspires.ftc.vision.apriltag.AprilTagPoseFtc;
 
 /**
 * This file provides basic Telop driving for a Pushbot robot.
@@ -55,9 +57,18 @@ public class SteeringControls extends OpMode
     HardwarePushbot robot       = new HardwarePushbot(); // use the class created to define a Pushbot's hardware
     double speed=0;
 
+    final double DESIRED_BEARING = 9;
+    final double MAX_AUTO_TURN  = 0.15;  //  Clip the turn speed to this max value (adjust for your robot)
+    int drivingState = 0;
+
     ElapsedTime runtime = new ElapsedTime();
     double delayTime = 0;
-    final double PAUSE_TIME = 2;
+    final double PAUSE_TIME = 5;
+
+    final int RED_GOAL_ID = 24;
+    final int BLUE_GOAL_ID = 20;
+
+    final int ROBOT_LENGTH = 15;
     /*
     * Code to run ONCE when the driver hits INIT
     */
@@ -96,36 +107,51 @@ public class SteeringControls extends OpMode
         launch();
     } //end of loop
 
-        public void drive()
+    public void drive()
+    {
+        if (gamepad1.bWasPressed()) //When the button on gamepad is pressed stuff below happens
         {
-            double forward = -gamepad1.left_stick_y; //strafing left and right
-            double strafe = -gamepad1.left_stick_x; //
-            double turn = gamepad1.right_stick_x; //backwards and forwards
+            drivingState = calculatePivot(RED_GOAL_ID);
 
-            robot.driveTrain.drive(forward, strafe, turn);
-        }//end of drive
-
-        public void launch()
+        } else if (gamepad1.xWasPressed()) //When the button on gamepad is pressed stuff below happens
         {
-            //press the button to start the launcher code
-            if (gamepad2.b) //launch
-            {
-                if(robot.launcher.isWarmingUp())
-                    robot.launcher.launching();
-            }//end of gamepad 2 right bumper
-            else if (gamepad2.right_bumper)
-            {
-                if(robot.launcher.readyToLaunch())
-                    robot.launcher.warmingUp();
-            }
-            else if (gamepad2.left_bumper) //if i press the left bumper
-            {
-                //turn off the launching motor
-                robot.launcher.notLaunching();
-            }//end of gamepad 2 left bumper
+            drivingState = calculatePivot(BLUE_GOAL_ID);
+        } else //If button not pressed, controls on gamepad work normally
+        {
+            joystickDrive();
+        }       
+    }
 
-            if(gamepad2.y)
-            {
+    public void joystickDrive()
+    {
+        double forward = -gamepad1.left_stick_y; //strafing left and right
+        double strafe = -gamepad1.left_stick_x; //
+        double turn = gamepad1.right_stick_x; //backwards and forwards
+
+        robot.driveTrain.drive(forward, strafe, turn);
+    }//end of drive
+
+    public void launch()
+    {
+        //press the button to start the launcher code
+        if (gamepad2.b) //launch
+        {
+            if(robot.launcher.isWarmingUp())
+                robot.launcher.launching();
+        }//end of gamepad 2 right bumper
+        else if (gamepad2.right_bumper)
+        {
+            if(robot.launcher.readyToLaunch())
+                robot.launcher.warmingUp();
+        }
+        else if (gamepad2.left_bumper) //if i press the left bumper
+        {
+            //turn off the launching motor
+            robot.launcher.notLaunching();
+        }//end of gamepad 2 left bumper
+
+        if(gamepad2.y)
+        {
                 robot.launcher.turnOffAgitatorIntake(); //pressing y turns off the agitator and the intake
             }
             if(gamepad2.a)
@@ -144,10 +170,57 @@ public class SteeringControls extends OpMode
             }
 
         } //end of launch
+            
+            private int calculatePivot(int id){ //This is the method called above to calculate where robot needs to go based on desired distance
+        // Tell the driver what we see, and what to do.
+        boolean targetFound     = false;    // Set to true when an AprilTag target is detected
+        AprilTagPoseFtc pose;
+
+        pose = robot.visionControl.getDetectionsVal(id); //Getting values from VisionControl class of the April Tag ID
+        double arcLength = 0;
+        int foundtag = 0;
+        if (pose!=null) { //If there are values
+            targetFound = true; //Then target is found
+            foundtag = id;
+
+        } else { //If there aren't any values
+            //telemetry.addData("\n>","Drive using joysticks to find valid target\n"); //Then adjust to find values
+            targetFound = false;
+            //robot.visionControl.stopStreaming();
+            telemetry.addData("\n>", "target not found %d", id);
+            foundtag = 0;
+        }
+
+        if (targetFound) {
+
+            //find the error (how much our bearing is off by)
+            double  headingError = (pose.bearing - DESIRED_BEARING);
+
+            //calculate the arc length based on the length of the back wheel to the camera
+            arcLength = 2 * Math.PI * ROBOT_LENGTH * (Math.abs(headingError) / 360);
+
+            //turn based on what our error was (don't do aything if 0)
+            if(headingError > 0)
+            {
+                robot.driveTrain.encoderDrive(true, MAX_AUTO_TURN, arcLength, PAUSE_TIME, "TURNLEFT");
+            }
+            else if(headingError < 0)
+            {
+                robot.driveTrain.encoderDrive(true, MAX_AUTO_TURN, arcLength, PAUSE_TIME, "TURNRIGHT");
+            }
+
+            telemetry.addData("Auto","Pose bearing %5.2f, Heading error %5.2f, arcLength %5.2f, delayTime %5.2f", pose.bearing, headingError, arcLength, delayTime);
+            telemetry.update();
+        }
+
+
+        return foundtag;
+    }
+
+           
 
 
 
 
-
-    } //end of steering controls
+} //end of steering controls
   

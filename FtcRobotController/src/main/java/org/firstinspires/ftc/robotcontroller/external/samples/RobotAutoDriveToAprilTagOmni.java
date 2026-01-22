@@ -167,7 +167,7 @@ public class RobotAutoDriveToAprilTagOmni extends LinearOpMode
                         break;  // don't look any further.
                     } else {
                         // This tag is in the library, but we do not want to track it right now.
-                        telemetry.addData("Skipping", "Tag ID %d is not desired", detection.id);
+                        telemetry.addData("Skipping", "Tag ID %d is not  n +-", detection.id);
                     }
                 } else {
                     // This tag is NOT in the library, so we don't have enough information to track to it.
@@ -196,7 +196,7 @@ public class RobotAutoDriveToAprilTagOmni extends LinearOpMode
 
                 // Use the speed and turn "gains" to calculate how we want the robot to move.
                 drive  = Range.clip(rangeError * SPEED_GAIN, -MAX_AUTO_SPEED, MAX_AUTO_SPEED);
-                turn   = Range.clip(headingError * TURN_GAIN, -MAX_AUTO_TURN, MAX_AUTO_TURN) ;
+                turn   = Range.clip(headingError * TURN_GAIN, -MAX_AUTO_TURN, MAX_AUTO_TURN);
                 strafe = Range.clip(-yawError * STRAFE_GAIN, -MAX_AUTO_STRAFE, MAX_AUTO_STRAFE);
 
                 telemetry.addData("Auto","Drive %5.2f, Strafe %5.2f, Turn %5.2f ", drive, strafe, turn);

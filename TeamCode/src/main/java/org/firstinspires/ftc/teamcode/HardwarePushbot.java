@@ -52,6 +52,8 @@ public class HardwarePushbot {
   
        public DriveTrain driveTrain;
 
+      public VisionControl visionControl;
+
 
         
         /* local OpMode members. */
@@ -69,6 +71,7 @@ public class HardwarePushbot {
             launcher= new BasicBot_Launcher(ahwMap);
 
             driveTrain = new DriveTrain(ahwMap);
+            visionControl = new VisionControl(ahwMap);
         }
     }
 

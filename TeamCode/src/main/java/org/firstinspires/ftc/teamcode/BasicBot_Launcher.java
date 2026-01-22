@@ -35,11 +35,14 @@ public class BasicBot_Launcher {
 
 
     }
-
-    public void setAgitatorSpeed(double speed) {
-        if (isAgitatorForwards) {
+    public void setAgitatorSpeed(double speed)
+    {
+        if(isAgitatorForwards)
+        {
             agitator.setPower(speed); //forwards
-        } else {
+        }
+        else
+        {
             agitator.setPower(-speed); //backwards
         }
     }
@@ -52,16 +55,19 @@ public class BasicBot_Launcher {
         shooterIntake.setPower(speed);
     }
 
-    void changeAgitatorDirection() {
-        if (isAgitatorForwards) //change forwards to backwards and vice versa
+    void changeAgitatorDirection()
+    {
+        if(isAgitatorForwards) //change forwards to backwards and vice versa
         {
             isAgitatorForwards = false;
-        } else {
+        }
+        else
+        {
             isAgitatorForwards = true;
         }
     }
-
-    void notLaunching() {
+    void notLaunching()
+    {
         state = 0;
         setMotors();
     }
@@ -81,6 +87,14 @@ public class BasicBot_Launcher {
     void turnOffAgitatorIntake() {
         if (state == 2) {
             state = 1;
+            setMotors();
+        }
+    }
+    void turnOffAgitatorIntake()
+    {
+        if(state == 2)
+        {
+            state = 3;
             setMotors();
         }
     }
