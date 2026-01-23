@@ -90,14 +90,6 @@ public class BasicBot_Launcher {
             setMotors();
         }
     }
-    void turnOffAgitatorIntake()
-    {
-        if(state == 2)
-        {
-            state = 3;
-            setMotors();
-        }
-    }
 
     void launchShort()
     {

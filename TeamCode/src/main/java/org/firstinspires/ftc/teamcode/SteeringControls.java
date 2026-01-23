@@ -139,39 +139,35 @@ public class SteeringControls extends OpMode
             if(robot.launcher.isWarmingUp())
                 robot.launcher.launching();
         }//end of gamepad 2 right bumper
-        else if (gamepad2.right_bumper)
+        if (gamepad2.right_bumper) //warm up
         {
             if(robot.launcher.readyToLaunch())
                 robot.launcher.warmingUp();
         }
-        else if (gamepad2.left_bumper) //if i press the left bumper
+        if (gamepad2.left_bumper) //turn off launching motor
         {
-            //turn off the launching motor
             robot.launcher.notLaunching();
         }//end of gamepad 2 left bumper
-
         if(gamepad2.y)
         {
-                robot.launcher.turnOffAgitatorIntake(); //pressing y turns off the agitator and the intake
-            }
-            if(gamepad2.a)
-            {
-                robot.launcher.changeAgitatorDirection(); //pressing a makes the agitator rotate in the other direction (for getting balls unstuck)
-                robot.launcher.setAgitatorSpeed(1); //speed needs to be reset everytime due to state code
-            }
+            robot.launcher.turnOffAgitatorIntake(); //pressing y turns off the agitator and the intake
+        }
+        if(gamepad2.a)
+        {
+            robot.launcher.changeAgitatorDirection(); //pressing a makes the agitator rotate in the other direction (for getting balls unstuck)
+            robot.launcher.setAgitatorSpeed(1); //speed needs to be reset everytime due to state code
+        }
+        if(gamepad2.dpad_down)
+        {
+            robot.launcher.launchShort();
+        }
+        if(gamepad2.dpad_up)
+        {
+            robot.launcher.launchLong();
+        }
 
-            if(gamepad2.dpad_down)
-            {
-                robot.launcher.launchShort();
-            }
-            if(gamepad2.dpad_up)
-            {
-                robot.launcher.launchLong();
-            }
-
-        } //end of launch
-            
-            private int calculatePivot(int id){ //This is the method called above to calculate where robot needs to go based on desired distance
+    } //end of launch
+    private int calculatePivot(int id){ //This is the method called above to calculate where robot needs to go based on desired distance
         // Tell the driver what we see, and what to do.
         boolean targetFound     = false;    // Set to true when an AprilTag target is detected
         AprilTagPoseFtc pose;
