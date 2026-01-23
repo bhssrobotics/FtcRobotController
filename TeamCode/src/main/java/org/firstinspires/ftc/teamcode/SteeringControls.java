@@ -57,8 +57,9 @@ public class SteeringControls extends OpMode
     HardwarePushbot robot       = new HardwarePushbot(); // use the class created to define a Pushbot's hardware
     double speed=0;
 
-    final double DESIRED_BEARING = 9;
-    final double MAX_AUTO_TURN  = 0.15;  //  Clip the turn speed to this max value (adjust for your robot)
+    final double RED_DESIRED_BEARING = 7.7;
+    final double BLUE_DESIRED_BEARING = -2.5;
+    final double MAX_AUTO_TURN  = 0.25;  //  Clip the turn speed to this max value (adjust for your robot)
     int drivingState = 0;
 
     ElapsedTime runtime = new ElapsedTime();
@@ -111,11 +112,11 @@ public class SteeringControls extends OpMode
     {
         if (gamepad1.bWasPressed()) //When the button on gamepad is pressed stuff below happens
         {
-            drivingState = calculatePivot(RED_GOAL_ID);
+            drivingState = calculatePivot(RED_GOAL_ID, RED_DESIRED_BEARING);
 
         } else if (gamepad1.xWasPressed()) //When the button on gamepad is pressed stuff below happens
         {
-            drivingState = calculatePivot(BLUE_GOAL_ID);
+            drivingState = calculatePivot(BLUE_GOAL_ID, BLUE_DESIRED_BEARING);
         } else //If button not pressed, controls on gamepad work normally
         {
             joystickDrive();
@@ -167,7 +168,7 @@ public class SteeringControls extends OpMode
         }
 
     } //end of launch
-    private int calculatePivot(int id){ //This is the method called above to calculate where robot needs to go based on desired distance
+    private int calculatePivot(int id, double allianceBearing){ //This is the method called above to calculate where robot needs to go based on desired distance
         // Tell the driver what we see, and what to do.
         boolean targetFound     = false;    // Set to true when an AprilTag target is detected
         AprilTagPoseFtc pose;
@@ -190,7 +191,7 @@ public class SteeringControls extends OpMode
         if (targetFound) {
 
             //find the error (how much our bearing is off by)
-            double  headingError = (pose.bearing - DESIRED_BEARING);
+            double  headingError = (pose.bearing - allianceBearing);
 
             //calculate the arc length based on the length of the back wheel to the camera
             arcLength = 2 * Math.PI * ROBOT_LENGTH * (Math.abs(headingError) / 360);
