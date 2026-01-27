@@ -129,7 +129,7 @@ public class VisionTesting extends OpMode
 
     private void driveTestPivotCalc()
     {
-        telemetryAprilTag();
+        cameraCalibration();
  //       if(drivingState == 0)
 //        {
             if (gamepad1.bWasPressed()) //When the button on gamepad is pressed stuff below happens
@@ -160,7 +160,7 @@ public class VisionTesting extends OpMode
 
 
     private void driveTestContinuous() {
-        telemetryAprilTag();
+        cameraCalibration();
         if (gamepad1.dpad_right) //When the button on gamepad is pressed stuff below happens
         {
             //robot.visionControl.resumeStreaming();
@@ -197,7 +197,7 @@ public class VisionTesting extends OpMode
     }
     private void driveTestDrivingState()
     {
-        //telemetryAprilTag();
+        //cameraCalibration();
         if(drivingState == 0)
         {
             if (gamepad1.bWasPressed()) //When the button on gamepad is pressed stuff below happens
@@ -253,7 +253,7 @@ public class VisionTesting extends OpMode
 
         //
 
-    private void telemetryAprilTag() { //Telemetry sends data to the driver hub and displays text on the screen
+    private void cameraCalibration() { //Telemetry sends data to the driver hub and displays text on the screen
         List<AprilTagDetection> currentDetections = robot.visionControl.getCurrentDetections();
         telemetry.addData("# AprilTags Detected", currentDetections.size());
 
@@ -277,7 +277,7 @@ public class VisionTesting extends OpMode
 
         telemetry.update();
 
-    }   // end method telemetryAprilTag()
+    }   // end method cameraCalibration()
 
     private int fixPivot(int id){ //This is the method called above to calculate where robot needs to go based on desired distance
         // Tell the driver what we see, and what to do.

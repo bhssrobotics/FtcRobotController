@@ -67,7 +67,7 @@ public class Auto extends LinearOpMode {
         while (opModeIsActive())
         {
             //put in auto path of choice here
-            blueInnerSidewaysLaunchClose();
+            redInnerForwardLaunchClose();
 
           
         telemetry.update();
