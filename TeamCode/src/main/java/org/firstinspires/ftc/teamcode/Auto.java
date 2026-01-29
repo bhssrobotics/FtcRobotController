@@ -67,7 +67,7 @@ public class Auto extends LinearOpMode {
         while (opModeIsActive())
         {
             //put in auto path of choice here
-            blueInnerForwardLaunchClose();
+            redOuterForwardLaunchClose();
 
           
         telemetry.update();
@@ -86,7 +86,7 @@ public class Auto extends LinearOpMode {
     {
         robot.launcher.warmingUp(); //fly wheel starts
 
-        sleep((int)PAUSE_TIME*1000); //sleep for 5s (multiplies by 1000 as sleep is in milliseconds)
+        sleep((int)PAUSE_TIME*500); //sleep for 5s (multiplies by 1000 as sleep is in milliseconds)
 
         robot.launcher.launching();
 

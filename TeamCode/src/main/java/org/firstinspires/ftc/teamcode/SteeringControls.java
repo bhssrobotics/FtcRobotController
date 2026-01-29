@@ -58,7 +58,8 @@ public class SteeringControls extends OpMode
     double speed=0;
 
     final double DESIRED_BEARING = 9;
-    final double MAX_AUTO_TURN  = 0.25;  //  Clip the turn speed to this max value (adjust for your robot)
+    final double MAX_AUTO_TURN  = 0.25;  //  Clip t
+    // he turn speed to this max value (adjust for your robot)
     int drivingState = 0;
 
     ElapsedTime runtime = new ElapsedTime();
