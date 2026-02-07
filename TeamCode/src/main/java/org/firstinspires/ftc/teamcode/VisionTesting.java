@@ -57,6 +57,11 @@ import org.firstinspires.ftc.vision.apriltag.AprilTagDetection;
 * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
 */
 
+//Class used for testing Vision Control and experimenting with Vision Control code (NOT CURRENT CODE). Steering controls class has the current code for calculating desired bearing
+//Vision Control class has code for starting and stopping webcam, detecting correct April Tag ID, and getting values from April Tag
+//Sample code for getting robot to align with April Tags called RobotAutoDriveToAprilTagOmni.Java
+//ConceptAprilTag.java is another sample code to keep in mind
+
 @TeleOp(name="Steering With Vision", group="Pushbot")
 public class VisionTesting extends OpMode
 {
@@ -129,7 +134,7 @@ public class VisionTesting extends OpMode
 
     private void driveTestPivotCalc()
     {
-        //telemetryAprilTag();
+        telemetryAprilTag();
  //       if(drivingState == 0)
 //        {
             if (gamepad1.bWasPressed()) //When the button on gamepad is pressed stuff below happens
@@ -154,6 +159,7 @@ public class VisionTesting extends OpMode
             }
 
             launch();
+            telemetry.update();
       //  }
 
     }

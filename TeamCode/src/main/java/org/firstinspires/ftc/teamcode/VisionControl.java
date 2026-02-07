@@ -53,13 +53,13 @@ public class VisionControl
     public void stopStreaming()
     {
         visionPortal.stopStreaming();
-    }
+    } //Webcam related
 
     // accessor to resume streaming
     public void resumeStreaming()
     {
         visionPortal.resumeStreaming();
-    }
+    } //Webcam related
 
     // accessor to close
     public void close()

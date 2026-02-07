@@ -45,6 +45,7 @@ public class HardwarePushbot {
      * Note:  All names are lower case and some have single spaces between words.
      */
 // hello this is testing :)
+// Where all the classes get defined for the robot to use
 
 
 

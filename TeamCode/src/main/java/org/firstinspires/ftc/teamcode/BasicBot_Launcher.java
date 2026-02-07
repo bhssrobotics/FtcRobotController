@@ -9,6 +9,11 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 
+
+//State machine launcher guide
+//0 - not launching, nothing is doing anything; 1 - fly wheel is warming up, agitator and intake still doing nothing; 2 - launching, everything working; 3 - turn off agitator and intake
+
+//Initializing things
 public class BasicBot_Launcher {
     private CRServo agitator = null;
     private DcMotor flywheel = null;
@@ -35,7 +40,7 @@ public class BasicBot_Launcher {
 
 
     }
-    public void setAgitatorSpeed(double speed)
+    public void setAgitatorSpeed(double speed) //Setting speed of agitator depending on which direction agitator is going
     {
         if(isAgitatorForwards)
         {
@@ -47,15 +52,15 @@ public class BasicBot_Launcher {
         }
     }
 
-    private void setFlywheelSpeed(double speed) {
+    private void setFlywheelSpeed(double speed) { //method to set flywheel speed
         flywheel.setPower(speed);
     }
 
-    private void setShooterIntakeSpeed(double speed) {
+    private void setShooterIntakeSpeed(double speed) { //method to set shooter intake
         shooterIntake.setPower(speed);
     }
 
-    void changeAgitatorDirection()
+    void changeAgitatorDirection() //Changing agitator direction in case balls get stuck
     {
         if(isAgitatorForwards) //change forwards to backwards and vice versa
         {
@@ -66,6 +71,8 @@ public class BasicBot_Launcher {
             isAgitatorForwards = true;
         }
     }
+
+    //State machine for launching
     void notLaunching()
     {
         state = 0;
@@ -100,6 +107,7 @@ public class BasicBot_Launcher {
         launchingShort = false;
     }
 
+    //Set motors for different parts of launcher for each state
         void setMotors()
         {
             if (state == 0) {
