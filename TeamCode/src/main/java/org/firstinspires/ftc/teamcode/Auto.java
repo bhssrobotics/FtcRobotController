@@ -113,7 +113,138 @@ public class Auto extends LinearOpMode {
     {
         robot.launcher.notLaunching();
     }
-        public void blueInnerSidewaysLaunchClose()
+
+        public void frontHivePark()
+        {
+            //robot moves forward, then strafes left and continues forward, moving against the hive before strafing left into the loading zone to park
+            //(this is a possible path for getting out of the way of our alliance teammate who, in theory, would score higher)
+            robot.driveTrain.encoderDrive(opModeIsActive(), 60, 8, 30, "FORWARD"); //move forward
+            sleep(250); //optional pause after each move
+            robot.driveTrain.encoderDrive(opModeIsActive(), 60, 8, 30, "LEFT"); //strafe to the left
+            sleep(250); //optional pause after each move
+            robot.driveTrain.encoderDrive(opModeIsActive(), 60, 25, 30, "FORWARD"); //move forward
+            sleep(250); //optional pause after each move
+            robot.driveTrain.encoderDrive(opModeIsActive(), 60, 6, 30, "LEFT"); //strafe to the left
+            sleep(1000000); //sleep until auto is over
+        }
+
+        public void frontHiveLaunch()
+        {
+            //robot moves forward, then start launch and stop launch, then strafes left continues
+            // forward moving against the hive before strafing left into the loading zone to park
+            //(this is a possible path for getting out of the way of our alliance teammate who, in theory, would score higher)
+            robot.driveTrain.encoderDrive(opModeIsActive(), 60, 8, 30, "FORWARD"); //move forward
+            sleep(250); //optional pause after each move
+            launch();
+            stopLaunch();
+            sleep(250);
+            robot.driveTrain.encoderDrive(opModeIsActive(), 60, 8, 30, "LEFT"); //strafe to the left
+            sleep(250); //optional pause after each move
+            robot.driveTrain.encoderDrive(opModeIsActive(), 60, 25, 30, "FORWARD"); //move forward
+            sleep(250); //optional pause after each move
+            robot.driveTrain.encoderDrive(opModeIsActive(), 60, 6, 30, "LEFT"); //strafe to the left
+            sleep(1000000); //sleep until auto is over
+        }
+
+        public void frontWallPark()
+        {
+            //the robot start strafes to the left, then moves forward(avoiding the flowers) to parking place. then park
+            robot.driveTrain.encoderDrive(opModeIsActive(),60,12,30,"LEFT");//strafe to the left
+            sleep(250);
+            robot.driveTrain.encoderDrive(opModeIsActive(),60,8,30,"FORWARD");//move forward
+            sleep(250);
+            robot.driveTrain.encoderDrive(opModeIsActive(),60,4,30,"RIGHT");//strafe to the right
+            sleep(250);
+            robot.driveTrain.encoderDrive(opModeIsActive(),60,4,30,"FORWARD");//move forward
+            sleep(250);
+            robot.driveTrain.encoderDrive(opModeIsActive(),60,4,30,"LEFT");//strafe to the left
+            sleep(250);
+            robot.driveTrain.encoderDrive(opModeIsActive(),60,7,30,"FORWARD");//move forward
+            sleep(1000000);
+        }
+
+        public void frontWallLaunch()
+        {
+            //robot moves forward and launches, then strafes left, around the flower, and along the wall to the loading zone to park
+            //(most likely the auto path we'll use most, sort of our default)
+            robot.driveTrain.encoderDrive(opModeIsActive(), 60, 8, 30, "FORWARD"); //move forward
+            sleep(250); //optional pause after each move
+            launch(); //launch
+            stopLaunch(); //stop launching
+            sleep(250); //optional pause after each move
+            robot.driveTrain.encoderDrive(opModeIsActive(), 60, 20, 30, "LEFT"); //strafe left
+            sleep(250); //optional pause after each move
+            robot.driveTrain.encoderDrive(opModeIsActive(), 60, 4, 30, "FORWARD"); //move forward
+            sleep(250); //optional pause after each move
+            robot.driveTrain.encoderDrive(opModeIsActive(), 60, 2, 30, "LEFT"); //strafe left
+            sleep(250); //optional pause after each move
+            robot.driveTrain.encoderDrive(opModeIsActive(), 60, 12, 30, "FORWARD"); //move forward
+            sleep(10000000); //sleep until auto is over
+        }
+
+        public void backLaunch()
+        {
+            //robot moves forward and gets ready to launch, waiting until the last minute to launch. It then goes back a bit and strafes right into the loading zone to park
+            //(auto path for if our alliance members are really good and they tip the hive in auto, and we wait until they finish to add some balls on the other side)
+            robot.driveTrain.encoderDrive(opModeIsActive(), 60, 8, 30, "FORWARD"); //move forward
+            sleep(20000); //20 second pause before launching
+            launch(); //launch
+            stopLaunch(); //stop launching
+            sleep(250); //optional pause after each move
+            robot.driveTrain.encoderDrive(opModeIsActive(), 60, 2, 30, "REVERSE"); //move backwards
+            sleep(250); //optional pause after each move
+            robot.driveTrain.encoderDrive(opModeIsActive(), 60, 25, 30, "RIGHT"); //strafe right
+            sleep(1000000); //sleep until auto is over
+        }
+
+        public void sideLaunch()
+        {
+            //The robot moves forward and strafes to the right (against the hive). It then turns left and launch
+            //then strafes to the left and moves forward. Last, strafes to the left and park.
+            robot.driveTrain.encoderDrive(opModeIsActive(), 60, 4, 30, "FORWARD"); //move forward
+            sleep(250);
+            robot.driveTrain.encoderDrive(opModeIsActive(), 60, 8, 30, "RIGHT"); //strafes to the right
+            sleep(250);
+            robot.driveTrain.encoderDrive(opModeIsActive(), 60, 5, 30, "FORWARD"); //move forward
+            sleep(250);
+            robot.driveTrain.encoderDrive(opModeIsActive(), 60, 6, 30, "TURNLEFT"); //turn left
+            sleep(250);
+            launch();
+            stopLaunch();
+            sleep(250);
+            robot.driveTrain.encoderDrive(opModeIsActive(), 60, 4, 30, "LEFT"); //strafe to the left
+            sleep(250);
+            robot.driveTrain.encoderDrive(opModeIsActive(), 60, 8, 30, "FORWARD"); //move forward
+            sleep(250);
+            robot.driveTrain.encoderDrive(opModeIsActive(), 60, 5, 30, "LEFT"); //move forward
+            sleep(1000000);
+        }
+
+        public void backPark()
+        {
+            //the robot strafes to the right but avoiding the flower, then moves forward to park.
+            robot.driveTrain.encoderDrive(opModeIsActive(), 60, 4, 30, "FORWARD"); //move forward
+            sleep(250);
+            robot.driveTrain.encoderDrive(opModeIsActive(), 60, 5, 30, "RIGHT"); //strafes to the right
+            sleep(250);
+            robot.driveTrain.encoderDrive(opModeIsActive(), 60, 4, 30, "REVERSE"); //move backward
+            sleep(250);
+            robot.driveTrain.encoderDrive(opModeIsActive(), 60, 4, 30, "RIGHT"); //strafe to the right
+            sleep(250);
+            robot.driveTrain.encoderDrive(opModeIsActive(), 60, 4, 30, "FORWARD"); //move forward
+            sleep(1000000);
+        }
+
+        public void sidePark()
+        {
+            //strafe left into the loading zone and park (super simple option if not much else works)
+            robot.driveTrain.encoderDrive(opModeIsActive(), 60, 4, 30, "LEFT"); //strafe left
+            sleep(9000000); //sleep until auto is over
+        }
+
+        /*
+        old code
+          public void blueInnerSidewaysLaunchClose()
         {
             //launch (vaguely to the left - maybe turn?), strafe left from start, get in the way of red alliance's loading zone (see Emily's diagrams), then straighten out
 
@@ -132,6 +263,7 @@ public class Auto extends LinearOpMode {
             robot.driveTrain.encoderDrive(opModeIsActive(), 60, 3, 30, "REVERSE"); //I'm assuming it means move backwards
             sleep(100000000);   // sleep until auto is over
         }
+
           public void redInnerSidewaysLaunchClose()
           {
               //launch (vaguely to the right - maybe turn? strafe right from start, get in the way of blue alliance's loading zone (see Emily's diagrams), then straighten out
@@ -339,5 +471,7 @@ public class Auto extends LinearOpMode {
             robot.driveTrain. encoderDrive(opModeIsActive(),60,18,30,"FORWARD"); //Move forward
             sleep(10000000);   // sleep until auto is over
         }
+
+         */
   }
 // end class
