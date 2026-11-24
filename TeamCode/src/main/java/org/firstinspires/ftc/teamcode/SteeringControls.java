@@ -110,17 +110,7 @@ public class SteeringControls extends OpMode
 
     public void drive()
     {
-        if (gamepad1.bWasPressed()) //When the button 'b' on gamepad 1 is pressed, red desired bearing is calculated and robot pivots
-        {
-            drivingState = calculatePivot(RED_GOAL_ID, RED_DESIRED_BEARING);
-
-        } else if (gamepad1.xWasPressed()) //When the button 'x' on gamepad 1 is pressed blue desired bearing is calculated and robot pivots
-        {
-            drivingState = calculatePivot(BLUE_GOAL_ID, BLUE_DESIRED_BEARING);
-        } else //If button not pressed, controls on gamepad work normally
-        {
-            joystickDrive();
-        }       
+        joystickDrive();
     }
 
     public void joystickDrive() //gamepad controls
@@ -172,7 +162,7 @@ public class SteeringControls extends OpMode
 
         } //end of launch
             
-            private int calculatePivot(int id, double bearing){ //This is the method called above to calculate how far robot needs to turn based on desired bearing
+            /*private int calculatePivot(String id, double bearing){ //This is the method called above to calculate how far robot needs to turn based on desired bearing
         // Tell the driver what we see, and what to do.
         boolean targetFound     = false;    // Set to true when an AprilTag target is detected
         AprilTagPoseFtc pose;
@@ -217,7 +207,7 @@ public class SteeringControls extends OpMode
 
         return foundtag; //I believe display whether ID is detected or not
     }
-
+*/
            
 
 
