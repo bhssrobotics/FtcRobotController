@@ -48,13 +48,7 @@ public class HardwarePushbot {
 // Where all the classes get defined for the robot to use
 
 
-
-       public BasicBot_Launcher launcher = null;
-  
        public DriveTrain driveTrain;
-
-      public VisionControl visionControl;
-
 
         
         /* local OpMode members. */
@@ -67,12 +61,8 @@ public class HardwarePushbot {
         }
 
         /* Initialize standard Hardware interfaces */
-        public void init(HardwareMap ahwMap) 
+        public void init(HardwareMap ahwMap)
         {
-            launcher= new BasicBot_Launcher(ahwMap);
-
-            driveTrain = new DriveTrain(ahwMap);
-            visionControl = new VisionControl(ahwMap);
         }
     }
 
