@@ -55,21 +55,7 @@ public class SteeringControls extends OpMode
 {
     /* Declare OpMode members. */
     HardwarePushbot robot       = new HardwarePushbot(); // use the class created to define a Pushbot's hardware
-    double speed=0;
 
-    final double RED_DESIRED_BEARING = 9; //If on red alliance, use this one to shoot towards your goal. Desired bearing means how much the robot has to turn to align with April Tag so it can launch accurately. Team figure out desired bearing by testing.
-    final double BLUE_DESIRED_BEARING = -3.2; //If on blue alliance, use this one to shoot towards your goal. Desired bearing means how much the robot has to turn to align with April Tag so it can launch accurately. Team figure out desired bearing by testing.
-    final double MAX_AUTO_TURN  = 0.25;  //Clip the turn speed to this max value (adjust for your robot) which basically means how fast the robot turns when it aligns with robot.
-    int drivingState = 0; //Calculates red bearing and blue bearing (see below) so have to initialize it here
-
-    ElapsedTime runtime = new ElapsedTime();
-    double delayTime = 0; //Used later in code so have to initialize it here
-    final double PAUSE_TIME = 5; //Used later in code so have to initialize it here
-
-    final int RED_GOAL_ID = 24; //Every April Tag has a certain ID so that the webcam can differentiate between several. This was the ID for our red alliance goal.
-    final int BLUE_GOAL_ID = 20; //Every April Tag has a certain ID so that the webcam can differentiate between several. This was the ID for our blue alliance goal.
-
-    final int ROBOT_LENGTH = 15;
     /*
     * Code to run ONCE when the driver hits INIT
     */
