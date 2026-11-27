@@ -62,6 +62,10 @@ public class SteeringControls extends OpMode
     final double MAX_AUTO_TURN  = 0.25;  //Clip the turn speed to this max value (adjust for your robot) which basically means how fast the robot turns when it aligns with robot.
     int drivingState = 0; //Calculates red bearing and blue bearing (see below) so have to initialize it here
 
+    public boolean flywheelOn;
+    public boolean intakeOn;
+
+
     ElapsedTime runtime = new ElapsedTime();
     double delayTime = 0; //Used later in code so have to initialize it here
     final double PAUSE_TIME = 5; //Used later in code so have to initialize it here
@@ -124,42 +128,24 @@ public class SteeringControls extends OpMode
 
     public void launch()
     {
-        //press the button to start the launcher code
-        if (gamepad2.b) //Press 'b' button on gamepad 2 to launch
-        {
-            if(robot.launcher.isWarmingUp()) // If launcher is warming up
-                robot.launcher.launching(); //Then launch by pressing 'b'
+        if(gamepad2.b) {
+            if (intakeOn) {
+                intakeOn = false;
+                robot.launcher.setShooterIntakeSpeed(0);
+            } else {
+                intakeOn = true;
+                robot.launcher.setShooterIntakeSpeed(0.5);
+            }
         }
-        else if (gamepad2.right_bumper) //If I press the right bumper, then warm up launcher
-        {
-            if(robot.launcher.readyToLaunch()) //If robot is ready to launch
-                robot.launcher.warmingUp(); //Then warm up launcher
-        }//end of gamepad 2 right bumper
-        else if (gamepad2.left_bumper) //If I press the left bumper then stop launching
-        {
-            //turn off the launching motor
-            robot.launcher.notLaunching();
-        }//end of gamepad 2 left bumper
-
-        if(gamepad2.y)
-        {
-                robot.launcher.turnOffAgitatorIntake(); //pressing y turns off the agitator and the intake
+        if(gamepad2.y) {
+            if (flywheelOn) {
+                flywheelOn = false;
+                robot.launcher.setFlywheelSpeed(0);
+            } else {
+                flywheelOn = true;
+                robot.launcher.setFlywheelSpeed(0.5);
             }
-            if(gamepad2.a)
-            {
-                robot.launcher.changeAgitatorDirection(); //pressing a makes the agitator rotate in the other direction (for getting balls unstuck)
-                robot.launcher.setAgitatorSpeed(1); //speed needs to be reset everytime due to state code for the launcher (see state code guide in BasicBot_Launcher class to know what each state means)
-            }
-
-            if(gamepad2.dpad_down)
-            {
-                robot.launcher.launchShort(); //press dpad down to launch with less power (short launch)
-            }
-            if(gamepad2.dpad_up)
-            {
-                robot.launcher.launchLong(); //press dpad up to launch with more power (long launch)
-            }
-
+        }
         } //end of launch
             
             /*private int calculatePivot(String id, double bearing){ //This is the method called above to calculate how far robot needs to turn based on desired bearing

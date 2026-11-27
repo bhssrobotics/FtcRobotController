@@ -15,7 +15,7 @@ import com.qualcomm.robotcore.hardware.Servo;
 
 //Initializing things
 public class BasicBot_Launcher {
-    private CRServo agitator = null;
+   // private CRServo agitator = null;
     private DcMotor flywheel = null;
     private DcMotorEx shooterIntake = null;
     private int state = 0; //0 - not launching; 1 - fly wheel is warming up; 2 - launching; 3 - turn off agitator and intake
@@ -23,11 +23,11 @@ public class BasicBot_Launcher {
     private boolean launchingShort = false;
 
     public BasicBot_Launcher(HardwareMap hwMap) {
-        agitator = hwMap.get(CRServo.class, "agitator");
+       // agitator = hwMap.get(CRServo.class, "agitator");
         flywheel = hwMap.get(DcMotor.class, "flywheel");
         shooterIntake = hwMap.get(DcMotorEx.class, "shooterIntake");
 
-        flywheel.setDirection(DcMotor.Direction.REVERSE);
+        flywheel.setDirection(DcMotor.Direction.FORWARD);
         flywheel.setPower(0);
         flywheel.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
@@ -40,7 +40,7 @@ public class BasicBot_Launcher {
 
 
     }
-    public void setAgitatorSpeed(double speed) //Setting speed of agitator depending on which direction agitator is going
+   /* public void setAgitatorSpeed(double speed) //Setting speed of agitator depending on which direction agitator is going
     {
         if(isAgitatorForwards)
         {
@@ -51,16 +51,17 @@ public class BasicBot_Launcher {
             agitator.setPower(-speed); //backwards
         }
     }
-
-    private void setFlywheelSpeed(double speed) { //method to set flywheel speed
+*/
+    public void setFlywheelSpeed(double speed) { //method to set flywheel speed
         flywheel.setPower(speed);
     }
 
-    private void setShooterIntakeSpeed(double speed) { //method to set shooter intake
+    public void setShooterIntakeSpeed(double speed) { //method to set shooter intake
         shooterIntake.setPower(speed);
     }
 
-    void changeAgitatorDirection() //Changing agitator direction in case balls get stuck
+   /*
+   void changeAgitatorDirection() //Changing agitator direction in case balls get stuck
     {
         if(isAgitatorForwards) //change forwards to backwards and vice versa
         {
@@ -71,7 +72,7 @@ public class BasicBot_Launcher {
             isAgitatorForwards = true;
         }
     }
-
+*/
     //State machine for launching
     void notLaunching()
     {
@@ -111,11 +112,11 @@ public class BasicBot_Launcher {
         void setMotors()
         {
             if (state == 0) {
-                setAgitatorSpeed(0);
+              //  setAgitatorSpeed(0);
                 setFlywheelSpeed(0);
                 setShooterIntakeSpeed(0);
             } else if (state == 1) {
-                setAgitatorSpeed(0);
+              //  setAgitatorSpeed(0);
                 setShooterIntakeSpeed(0);
 
                 if (launchingShort) //if launching short, set flyWheel to slower speed (.6) in order to launch shorter
@@ -125,11 +126,10 @@ public class BasicBot_Launcher {
                     setFlywheelSpeed(0.75); //if launching long (as per usual), set flyWheel to regular speed (.75)
                 }
             } else if (state == 2) {
-                setAgitatorSpeed(1);
+               // setAgitatorSpeed(1);
                 setShooterIntakeSpeed(0.5);
             }
         }
-
         void getAgitatorSpeed ()
         {
 
