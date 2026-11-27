@@ -106,6 +106,7 @@ public class SteeringControls extends OpMode
     {
         drive();
         launch();
+        intake();
     } //end of loop
 
     public void drive()
@@ -124,94 +125,15 @@ public class SteeringControls extends OpMode
 
     public void launch()
     {
-        //press the button to start the launcher code
-        if (gamepad2.b) //Press 'b' button on gamepad 2 to launch
-        {
-            if(robot.launcher.isWarmingUp()) // If launcher is warming up
-                robot.launcher.launching(); //Then launch by pressing 'b'
-        }
-        else if (gamepad2.right_bumper) //If I press the right bumper, then warm up launcher
-        {
-            if(robot.launcher.readyToLaunch()) //If robot is ready to launch
-                robot.launcher.warmingUp(); //Then warm up launcher
-        }//end of gamepad 2 right bumper
-        else if (gamepad2.left_bumper) //If I press the left bumper then stop launching
-        {
-            //turn off the launching motor
-            robot.launcher.notLaunching();
-        }//end of gamepad 2 left bumper
-
-        if(gamepad2.y)
-        {
-                robot.launcher.turnOffAgitatorIntake(); //pressing y turns off the agitator and the intake
-            }
-            if(gamepad2.a)
-            {
-                robot.launcher.changeAgitatorDirection(); //pressing a makes the agitator rotate in the other direction (for getting balls unstuck)
-                robot.launcher.setAgitatorSpeed(1); //speed needs to be reset everytime due to state code for the launcher (see state code guide in BasicBot_Launcher class to know what each state means)
-            }
-
-            if(gamepad2.dpad_down)
-            {
-                robot.launcher.launchShort(); //press dpad down to launch with less power (short launch)
-            }
-            if(gamepad2.dpad_up)
-            {
-                robot.launcher.launchLong(); //press dpad up to launch with more power (long launch)
-            }
-
-        } //end of launch
-            
-            /*private int calculatePivot(String id, double bearing){ //This is the method called above to calculate how far robot needs to turn based on desired bearing
-        // Tell the driver what we see, and what to do.
-        boolean targetFound     = false;    // Set to true when an AprilTag target is detected
-        AprilTagPoseFtc pose;
-
-        pose = robot.visionControl.getDetectionsVal(id); //Getting values from Vision Control class of the April Tag ID
-        double arcLength = 0;
-        int foundtag = 0;
-        if (pose!=null) { //If there are values
-            targetFound = true; //Then target is found and bearing can be calculated by pressing correct button depending on alliance
-            foundtag = id;
-
-        } else { //If there aren't any values
-            //telemetry.addData("\n>","Drive using joysticks to find valid target\n"); //Then need to adjust robot to find values (helpful tips: check how webcam is positioned, and check where robot is on field - is it far back enough from April Tag and facing it properly?)
-            targetFound = false;
-            //robot.visionControl.stopStreaming();
-            telemetry.addData("\n>", "target not found %d", id);
-            foundtag = 0;
-        }
-
-        if (targetFound) {
-
-            //find the error (how much our bearing is off by so desired bearing can be calculated)
-            double  headingError = (pose.bearing - bearing);
-
-            //calculate the arc length based on the length of the back wheel to the camera (math)
-            arcLength = 2 * Math.PI * ROBOT_LENGTH * (Math.abs(headingError) / 360);
-
-            //turn based on what our error was (don't do anything if 0 because then we are at desired bearing)
-            if(headingError > 0)
-            {
-                robot.driveTrain.encoderDrive(true, MAX_AUTO_TURN, arcLength, PAUSE_TIME, "TURNLEFT"); //if heading error is greater than 0 then too far to the right of desired bearing
-            }
-            else if(headingError < 0)
-            {
-                robot.driveTrain.encoderDrive(true, MAX_AUTO_TURN, arcLength, PAUSE_TIME, "TURNRIGHT"); //if heading error is greater than 0 then too far to the left of desired bearing
-            }
-
-            telemetry.addData("Auto","Pose bearing %5.2f, Heading error %5.2f, arcLength %5.2f, delayTime %5.2f", pose.bearing, headingError, arcLength, delayTime); //telemetry to get it to work
-            telemetry.update(); //So telemetry keeps updating if things change I assume
-        }
 
 
-        return foundtag; //I believe display whether ID is detected or not
-    }
-*/
-           
+    } //end of launch
+
+    public void intake()
+    {
 
 
-
+    } //end of intake
 
 } //end of steering controls
   
