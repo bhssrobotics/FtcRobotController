@@ -9,9 +9,11 @@ import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.controls.ExposureControl;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.controls.GainControl;
 import org.firstinspires.ftc.vision.VisionPortal;
+import org.firstinspires.ftc.vision.apriltag.AprilTagClusterDetection;
 import org.firstinspires.ftc.vision.apriltag.AprilTagDetection;
 import org.firstinspires.ftc.vision.apriltag.AprilTagPoseFtc;
 import org.firstinspires.ftc.vision.apriltag.AprilTagProcessor;
+import org.firstinspires.ftc.vision.apriltag.AprilTagSingleDetection;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -53,13 +55,13 @@ public class VisionControl
     public void stopStreaming()
     {
         visionPortal.stopStreaming();
-    }
+    } //Webcam related
 
     // accessor to resume streaming
     public void resumeStreaming()
     {
         visionPortal.resumeStreaming();
-    }
+    } //Webcam related
 
     // accessor to close
     public void close()
@@ -74,10 +76,10 @@ public class VisionControl
         return currentDetections; //Return that ID
     }
 
-    public AprilTagPoseFtc getDetectionsVal(int id) //Once the April Tag is found, get the values of the April Tag
+    public AprilTagPoseFtc getDetectionsVal(String id) //Once the April Tag is found, get the values of the April Tag
     {
         List<AprilTagDetection> currentDetections = getCurrentDetections();
-        for (AprilTagDetection detection : currentDetections)
+       /* for (AprilTagDetection detection : currentDetections)
         {
             if (detection.metadata != null) { //If values are detected and from right ID then return values
                 if (detection.id==id){
@@ -85,6 +87,20 @@ public class VisionControl
                 }
             }
         }
+
+        */
+        //In case we need it: behold, the FTC default aprilTag detection method format
+
+       for (AprilTagDetection detection : currentDetections) {
+            if (detection instanceof AprilTagClusterDetection) {
+                AprilTagClusterDetection clusterDet = (AprilTagClusterDetection) detection;
+                // Do cluster tag processing here
+                if (clusterDet.metadata.name.equals(id)){
+                    return clusterDet.ftcPose;
+                }
+            }
+        }
+
         return null; //Otherwise return nothing
     }
 

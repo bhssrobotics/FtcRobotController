@@ -9,6 +9,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 public class DriveTrain
 {
 
+//This is the class that allows the robot to move properly by programming wheels and motors in certain directions
 
     /* Public OpMode members. */
     private DcMotor  leftFrontDriveWheel   = null; //motor for left front wheel

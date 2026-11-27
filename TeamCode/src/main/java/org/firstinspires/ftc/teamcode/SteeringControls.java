@@ -57,17 +57,17 @@ public class SteeringControls extends OpMode
     HardwarePushbot robot       = new HardwarePushbot(); // use the class created to define a Pushbot's hardware
     double speed=0;
 
-    final double RED_DESIRED_BEARING = 7.7;
-    final double BLUE_DESIRED_BEARING = -2.5;
-    final double MAX_AUTO_TURN  = 0.25;  //  Clip the turn speed to this max value (adjust for your robot)
-    int drivingState = 0;
+    final double RED_DESIRED_BEARING = 9; //If on red alliance, use this one to shoot towards your goal. Desired bearing means how much the robot has to turn to align with April Tag so it can launch accurately. Team figure out desired bearing by testing.
+    final double BLUE_DESIRED_BEARING = -3.2; //If on blue alliance, use this one to shoot towards your goal. Desired bearing means how much the robot has to turn to align with April Tag so it can launch accurately. Team figure out desired bearing by testing.
+    final double MAX_AUTO_TURN  = 0.25;  //Clip the turn speed to this max value (adjust for your robot) which basically means how fast the robot turns when it aligns with robot.
+    int drivingState = 0; //Calculates red bearing and blue bearing (see below) so have to initialize it here
 
     ElapsedTime runtime = new ElapsedTime();
-    double delayTime = 0;
-    final double PAUSE_TIME = 5;
+    double delayTime = 0; //Used later in code so have to initialize it here
+    final double PAUSE_TIME = 5; //Used later in code so have to initialize it here
 
-    final int RED_GOAL_ID = 24;
-    final int BLUE_GOAL_ID = 20;
+    final int RED_GOAL_ID = 24; //Every April Tag has a certain ID so that the webcam can differentiate between several. This was the ID for our red alliance goal.
+    final int BLUE_GOAL_ID = 20; //Every April Tag has a certain ID so that the webcam can differentiate between several. This was the ID for our blue alliance goal.
 
     final int ROBOT_LENGTH = 15;
     /*
@@ -76,7 +76,7 @@ public class SteeringControls extends OpMode
     //@Override
     public void init() 
     {
-        /* Initialize the hardware variables.
+        /* Initialize the hardware variables. So all these values above I'm assuming.
         * The init() method of the hardware class does all the work here
         */
         robot.init(hardwareMap);
@@ -106,27 +106,18 @@ public class SteeringControls extends OpMode
     {
         drive();
         launch();
+        intake();
     } //end of loop
 
     public void drive()
     {
-        if (gamepad1.bWasPressed()) //When the button on gamepad is pressed stuff below happens
-        {
-            drivingState = calculatePivot(RED_GOAL_ID, RED_DESIRED_BEARING);
-
-        } else if (gamepad1.xWasPressed()) //When the button on gamepad is pressed stuff below happens
-        {
-            drivingState = calculatePivot(BLUE_GOAL_ID, BLUE_DESIRED_BEARING);
-        } else //If button not pressed, controls on gamepad work normally
-        {
-            joystickDrive();
-        }       
+        joystickDrive();
     }
 
-    public void joystickDrive()
+    public void joystickDrive() //gamepad controls
     {
         double forward = -gamepad1.left_stick_y; //strafing left and right
-        double strafe = -gamepad1.left_stick_x; //
+        double strafe = -gamepad1.left_stick_x; //?
         double turn = gamepad1.right_stick_x; //backwards and forwards
 
         robot.driveTrain.drive(forward, strafe, turn);
@@ -134,90 +125,15 @@ public class SteeringControls extends OpMode
 
     public void launch()
     {
-        //press the button to start the launcher code
-        if (gamepad2.b) //launch
-        {
-            if(robot.launcher.isWarmingUp())
-                robot.launcher.launching();
-        }//end of gamepad 2 right bumper
-        if (gamepad2.right_bumper) //warm up
-        {
-            if(robot.launcher.readyToLaunch())
-                robot.launcher.warmingUp();
-        }
-        if (gamepad2.left_bumper) //turn off launching motor
-        {
-            robot.launcher.notLaunching();
-        }//end of gamepad 2 left bumper
-        if(gamepad2.y)
-        {
-            robot.launcher.turnOffAgitatorIntake(); //pressing y turns off the agitator and the intake
-        }
-        if(gamepad2.a)
-        {
-            robot.launcher.changeAgitatorDirection(); //pressing a makes the agitator rotate in the other direction (for getting balls unstuck)
-            robot.launcher.setAgitatorSpeed(1); //speed needs to be reset everytime due to state code
-        }
-        if(gamepad2.dpad_down)
-        {
-            robot.launcher.launchShort();
-        }
-        if(gamepad2.dpad_up)
-        {
-            robot.launcher.launchLong();
-        }
+
 
     } //end of launch
-    private int calculatePivot(int id, double allianceBearing){ //This is the method called above to calculate where robot needs to go based on desired distance
-        // Tell the driver what we see, and what to do.
-        boolean targetFound     = false;    // Set to true when an AprilTag target is detected
-        AprilTagPoseFtc pose;
 
-        pose = robot.visionControl.getDetectionsVal(id); //Getting values from VisionControl class of the April Tag ID
-        double arcLength = 0;
-        int foundtag = 0;
-        if (pose!=null) { //If there are values
-            targetFound = true; //Then target is found
-            foundtag = id;
-
-        } else { //If there aren't any values
-            //telemetry.addData("\n>","Drive using joysticks to find valid target\n"); //Then adjust to find values
-            targetFound = false;
-            //robot.visionControl.stopStreaming();
-            telemetry.addData("\n>", "target not found %d", id);
-            foundtag = 0;
-        }
-
-        if (targetFound) {
-
-            //find the error (how much our bearing is off by)
-            double  headingError = (pose.bearing - allianceBearing);
-
-            //calculate the arc length based on the length of the back wheel to the camera
-            arcLength = 2 * Math.PI * ROBOT_LENGTH * (Math.abs(headingError) / 360);
-
-            //turn based on what our error was (don't do aything if 0)
-            if(headingError > 0)
-            {
-                robot.driveTrain.encoderDrive(true, MAX_AUTO_TURN, arcLength, PAUSE_TIME, "TURNLEFT");
-            }
-            else if(headingError < 0)
-            {
-                robot.driveTrain.encoderDrive(true, MAX_AUTO_TURN, arcLength, PAUSE_TIME, "TURNRIGHT");
-            }
-
-            telemetry.addData("Auto","Pose bearing %5.2f, Heading error %5.2f, arcLength %5.2f, delayTime %5.2f", pose.bearing, headingError, arcLength, delayTime);
-            telemetry.update();
-        }
+    public void intake()
+    {
 
 
-        return foundtag;
-    }
-
-           
-
-
-
+    } //end of intake
 
 } //end of steering controls
   
